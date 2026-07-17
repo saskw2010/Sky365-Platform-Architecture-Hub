@@ -34,6 +34,18 @@
       <tr><td>Q005</td><td>BI / Dashboard</td><td>هل تعريف BI الخاص بالـController يكون Controller segment، أم JSON Dashboard مستقلًا مع tags/relations داخل Controller؟ وكيف نفصل static generation عن dynamic engine segments؟</td><td>مسجل، لم يُدرس</td></tr>
     </tbody></table>
   </section>
+  <section><h2>Q002 — فحص الوضع الحالي من المصدر</h2>
+    <table><tbody>
+      <tr><th>الحالة</th><td>تم إثبات الوضع الحالي؛ ننتظر قصة المالك ثم القرار.</td></tr>
+      <tr><th>الموجود في COT Reference</th><td><code>TplMdTrsQuotation.xml</code> يحتوي <code>command1</code> من نوع <code>Text</code>. النص هو SELECT projection مع LEFT JOIN على العميل والمستودع، والـView <code>grid1</code> يرتبط به من خلال <code>commandId="command1"</code>.</td></tr>
+      <tr><th>ملاحظة المصطلح</th><td>Commands في هذا المثال ليست بالضرورة INSERT/UPDATE/DELETE؛ الأمر المثبت هنا استعلام SELECT يحدد مصدر وشكل بيانات الـView.</td></tr>
+      <tr><th>Onboarding Converter</th><td><code>DynamicControllerOnboardingService</code> يقرأ fields وخصائص lookup ويبني <code>DynamicScreenSchema</code>، لكنه لا يقرأ عقدة <code>commands</code> ولا يحتفظ بعلاقة <code>view → commandId</code>.</td></tr>
+      <tr><th>Runtime COT Parser</th><td><code>CotDataController</code> يمثل Fields وViews فقط ولا يحتوي Commands؛ لذلك <code>CodeOnTimeXmlParser</code> و<code>MapCotToSchema</code> لا يستطيعان نقلها في هذا المسار.</td></tr>
+      <tr><th>Designer Parser</th><td>يوجد مسار منفصل في <code>DesignerService</code> يقرأ Command Id وType وText، لكنه ليس دليلًا أن الـDynamic onboarding JSON أو runtime يستخدم هذه المعلومات.</td></tr>
+      <tr><th>الحكم المؤقت</th><td><strong>فجوة تحويل مؤكدة، وأثرها المعماري لم يُحسم.</strong> لا نقرر بعد نقل SQL الخام؛ قد يكون المطلوب تحويل semantics الاستعلام إلى Query/View metadata أو مصدر بيانات داخلي آمن.</td></tr>
+      <tr><th>دليل المصدر</th><td><code>TplMdTrsQuotation.xml:3–21,38</code>؛ <code>DynamicControllerOnboardingService.cs:70–147</code>؛ <code>CotModels.cs:13–26</code>؛ <code>Sky365DynamicRuntimeService.cs:1391–1436</code>؛ <code>DesignerService.cs:128–151</code>.</td></tr>
+    </tbody></table>
+  </section>
   <section><h2>نظام الـGoals</h2><ol><li><strong>Goal 1 — Discovery & Decisions (نشط):</strong> إنهاء الأسئلة واحدة واحدة، فحص الكود، وتوثيق القرار المعماري. لا تنفيذ إنتاجي.</li><li><strong>Goal 2 — Implementation (لاحق):</strong> يُنشأ فقط بعد اعتماد قرارات Goal 1، ويحوّل القرارات إلى خطة وتنفيذ واختبارات.</li></ol></section>
   <section><h2>السؤال التالي</h2><p><strong>Q002 فقط:</strong> نبدأ أولًا بفهم معنى SQL Commands داخل Code On Time Controller وما الذي تتوقع أن يحتفظ به SKY365 عند التحويل.</p></section>
 </main>
