@@ -42,6 +42,8 @@
       <tr><th>Onboarding Converter</th><td><code>DynamicControllerOnboardingService</code> يقرأ fields وخصائص lookup ويبني <code>DynamicScreenSchema</code>، لكنه لا يقرأ عقدة <code>commands</code> ولا يحتفظ بعلاقة <code>view → commandId</code>.</td></tr>
       <tr><th>Runtime COT Parser</th><td><code>CotDataController</code> يمثل Fields وViews فقط ولا يحتوي Commands؛ لذلك <code>CodeOnTimeXmlParser</code> و<code>MapCotToSchema</code> لا يستطيعان نقلها في هذا المسار.</td></tr>
       <tr><th>Designer Parser</th><td>يوجد مسار منفصل في <code>DesignerService</code> يقرأ Command Id وType وText، لكنه ليس دليلًا أن الـDynamic onboarding JSON أو runtime يستخدم هذه المعلومات.</td></tr>
+      <tr><th>نتيجة المسح الأوسع</th><td>في 37 ملف COT مرجعي موجود داخل Salogi وNoor، تم العثور على 32 Command و44 علاقة <code>view → commandId</code>. جميع الـ32 كانت من النوع <code>Text</code> وتبدأ بـ<code>SELECT</code>؛ لم يظهر في هذه العينة INSERT أو UPDATE أو DELETE أو EXEC.</td></tr>
+      <tr><th>معنى النتيجة</th><td>الفجوة المثبتة في العينة الحالية هي فقدان Query/View semantics — مثل projection وjoins والحقول المحسوبة/المقروءة — وليست فقدان أوامر كتابة. لا يجوز تعميم ذلك تلقائيًا على كل نظام خارجي مستقبلي.</td></tr>
       <tr><th>الحكم المؤقت</th><td><strong>فجوة تحويل مؤكدة، وأثرها المعماري لم يُحسم.</strong> لا نقرر بعد نقل SQL الخام؛ قد يكون المطلوب تحويل semantics الاستعلام إلى Query/View metadata أو مصدر بيانات داخلي آمن.</td></tr>
       <tr><th>دليل المصدر</th><td><code>TplMdTrsQuotation.xml:3–21,38</code>؛ <code>DynamicControllerOnboardingService.cs:70–147</code>؛ <code>CotModels.cs:13–26</code>؛ <code>Sky365DynamicRuntimeService.cs:1391–1436</code>؛ <code>DesignerService.cs:128–151</code>.</td></tr>
     </tbody></table>
