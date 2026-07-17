@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>SKY365 Screen Definition Package</title><link rel="stylesheet" href="assets/site.css"></head>
+<body>
+<header><a href="index.html">العودة إلى Architecture Hub</a><h1>Screen Definition Package — Target Architecture</h1><p>عقد الشاشة الذي يفهمه Screen Studio والـAI والـRuntime دون توليد Screen Component مخصص.</p></header>
+<main>
+<section class="hero"><h2>القرار</h2><p><strong>Screen Studio محرر عقود JSON وليس مولّد كود.</strong> الشاشة كيان منطقي واحد، لكن تعريفها أثناء التأليف مقسّم إلى عقود مستقلة قابلة لإعادة الاستخدام والتحقق والإصدار. عند النشر تُجمع في Runtime Snapshot واحد.</p><div class="diagram">Screen Definition Package
+├── Screen Manifest
+├── Controller References + Field Catalog
+├── Query / Data Source Definitions
+├── First-class View Definitions
+├── Layout + UI/UX Rules
+├── Actions + Access Policies
+├── Workflow / Events
+└── Runtime Metadata
+             ↓ compile + validate
+      screen.runtime.json
+             ↓
+ Blazor Runtime: Grid / Form / Chart / Tabs / Query Builder</div></section>
+
+<section class="card"><h2>الوضع الحالي مقابل الهدف</h2><table><thead><tr><th>المحور</th><th>الدليل الحالي</th><th>الهدف</th><th>الفجوة</th></tr></thead><tbody>
+<tr><td>Screen schema</td><td class="verified"><code>DynamicScreenSchema</code> يحتوي fields, sections, views, details, UI/pre-save/post-save rules.</td><td>Screen Manifest يجمع مراجع عدة Controllers وعقود الشاشة.</td><td>لا يوجد Package/Compiler موحد مثبت.</td></tr>
+<tr><td>Views</td><td class="partial"><code>DynamicViewSchema</code> يحتوي type/fields/actions/roles و<code>CustomSql</code>.</td><td>View كيان First-class يحمل controllerRef, queryRef, presentation, actions, access وdefault rules.</td><td>الهوية والإصدار وإعادة الاستخدام والربط متعدد Controllers غير مكتملة.</td></tr>
+<tr><td>Layout</td><td class="partial">Sections وfield/section widths و<code>TabKey</code> موجودة.</td><td>Tabs/Groups/Blocks متداخلة، responsive rules وcomponent registry.</td><td>Group يدعم fields/component/master component كعقد موحدة، مع round-trip designer.</td></tr>
+<tr><td>Data sources</td><td class="partial">TableName، Lookups، QueryJson/CustomSql fragments، EasyQuery وDashboard/Report sources.</td><td>Versioned <code>DataSourceDefinition</code> و<code>SkyQueryPlan</code> مشتركان بين Grid/Report/Dashboard.</td><td>Compiler/validator/output schema والسياسات غير موحدة.</td></tr>
+<tr><td>Security</td><td class="partial">AllowedRoles موزعة على catalog/views/workflow/dashboard مع runtime gates.</td><td>Capabilities + policy inheritance على Screen/Tab/View/Field/Action/Record/Query.</td><td>لا يوجد capability contract موحد عبر كل المحركات.</td></tr>
+<tr><td>Read/Write</td><td class="partial">Runtime CRUD وPersistence models موجودة؛ Custom query منفصلة.</td><td>Read Model مستقل عن Aggregate WriteMap/Commands.</td><td>Mutability وcommand bindings ليست First-class موحدة.</td></tr>
+<tr><td>Runtime artifact</td><td class="partial">الـRuntime يحمل JSON schemas/catalogs مباشرة مع cache/services.</td><td>Snapshot واحد versioned, validated, signed/cacheable.</td><td>لا يوجد Screen Package compiler مثبت.</td></tr>
+</tbody></table></section>
+
+<section class="card"><h2>حدود المسؤولية</h2><table><thead><tr><th>العقد</th><th>السؤال الذي يجيب عنه</th><th>المحتوى</th></tr></thead><tbody>
+<tr><td>Controller</td><td>ما البيانات وما السلوك الممكن؟</td><td>Entity/data source, fields, relations/lookups, queries, validation, business rules, workflow bindings, capabilities وWriteMap.</td></tr>
+<tr><td>Screen</td><td>كيف نركب تجربة المستخدم؟</td><td>Controllers aliases, tabs, views, default view rules, layout وnavigation.</td></tr>
+<tr><td>View</td><td>كيف نعرض Dataset محددة لمستخدم محدد؟</td><td>type, controllerRef, queryRef, field presentation, actions, access, conditions وbindings.</td></tr>
+<tr><td>Policy</td><td>من يستطيع رؤية أو تنفيذ ماذا؟</td><td>Capabilities ومتطلبات Screen/Tab/View/Field/Action/Record/Query.</td></tr>
+<tr><td>Studio</td><td>كيف نؤلف العقود؟</td><td>Grid/Form/Query/Visualization/Dashboard/Action/Access/Workflow builders.</td></tr>
+<tr><td>Runtime</td><td>كيف ننفذ العقد المنشور؟</td><td>تحميل Snapshot، policy evaluation، component resolution، query/persistence/action execution.</td></tr>
+</tbody></table><p><strong>العلاقة الأساسية:</strong> Controller واحد يمكن أن يظهر في شاشات متعددة، وشاشة واحدة يمكن أن تجمع عدة Controllers تحت Screen Manifest واحد.</p></section>
+
+<section class="card"><h2>View كيان First-class</h2><p>الـView ليست اسمًا مرادفًا لـGrid أو Form؛ هي binding بين Dataset وطريقة عرض وسياسة وصول وأفعال.</p><pre>{
+  "viewKey": "orders-grid",
+  "type": "grid",
+  "controllerRef": "orders",
+  "dataSourceRef": "active-orders",
+  "presentationRef": "views/orders-grid",
+  "requires": ["sales.orders.read"],
+  "actions": ["view", "edit", "new", "export"]
+}</pre><p>Field Catalog يعرّف معنى الحقل ونوعه ومصدره مرة واحدة، بينما كل View تملك presentation خاصة: Grid width/sort/filter، Form editor/layout/required، وChart role/aggregation.</p></section>
+
+<section class="card"><h2>الصلاحيات والأفعال</h2><div class="diagram">Role → grants Capabilities
+Screen / Tab / View / Field / Action / Query → requires Capabilities
+Runtime → evaluates policy + record predicate</div><p>أسماء Roles يمكن دعمها للتوافق، لكن العقد المستهدف يعتمد Capabilities. القرار النهائي لظهور الفعل:</p><div class="diagram">VisibleAction = Source Capability
+             AND View Action Enabled
+             AND User Capability
+             AND Runtime Condition</div><p>Studio يصدر Validation Warning إذا طلبت View فعلًا لا يسمح به المصدر. Database View وRaw Query افتراضيًا read-only، لكن يمكن تعريف Write Commands مستقلة؛ لذلك Mutability لا تُستنتج من نوع Read Source وحده.</p></section>
+
+<section class="card"><h2>Modular authoring، Unified runtime</h2><table><thead><tr><th>وقت التأليف</th><th>وقت التشغيل</th></tr></thead><tbody><tr><td><code>screen.json</code>، <code>controller.json</code>، <code>fields.json</code>، <code>views.json</code>، <code>queries.json</code>، <code>actions.json</code>، <code>access.json</code>.</td><td><code>screen.runtime.json</code> واحد، resolved وvalidated وversioned، مع dependency hashes وdiagnostics.</td></tr><tr><td>أفضل للـdiff وإعادة الاستخدام وتحرير Builder محدد وتقليل conflicts.</td><td>أفضل للتحميل والـcache والتوقيع وعدم تنفيذ resolution مكلف عند كل فتح.</td></tr></tbody></table></section>
+
+<section class="card"><h2>AI Screen Planning</h2><div class="diagram">User requirement
+  → AI Screen Planner
+  → typed plan (not free-form final JSON)
+  → Screen Skills
+  → schema + semantic + policy validation
+  → modular JSON package
+  → Studio preview + diagnostics
+  → human approval
+  → compiled Runtime Snapshot</div><p>Skills المستهدفة: Schema Discovery، Semantic Mapping، Screen Planning، Query Design، Form/Grid Design، Visualization، UX Rules، Access Policy، Mutability، Action Design، Validation وMigration. نفس العقود تستخدم من AI وCodex وStudio وCI validation.</p></section>
+
+<section class="card"><h2>EasyQuery وSemantic Query Gateway</h2><p>Query Builder محرر لجزء Data Source/View وليس مالك الشاشة. الاتجاه:</p><div class="diagram">Wren / Agent ↔ SkyQueryPlan ↔ EasyQuery Adapter ↔ EasyQuery Query JSON
+                              ↓
+              SKY365 validation + policy + compiler
+                              ↓
+                   Grid / Report / Dashboard</div><p>SQL output مشتق. Read Query لا يحدد WriteMap. EasyQuery يمكن استبداله دون تغيير عقد الشاشة، لأن SKY365 تملك <code>SkyQueryPlan</code> و<code>DataSourceDefinition</code>.</p></section>
+
+<section class="card"><h2>خارطة التنفيذ بعد اعتماد Goal 1</h2><ol>
+<li>تثبيت terminology والهوية والإصدارات ومراجع Controller/View/DataSource.</li>
+<li>كتابة JSON Schemas للعقود، مع compatibility/migration policy.</li>
+<li>إنشاء Golden Screen Package يضم Controllerين وGrid/Form/Trend/Query وcapability policies.</li>
+<li>تعريف Compiler inputs/outputs/diagnostics وRuntime Snapshot، دون تغيير Runtime أولًا.</li>
+<li>بناء validators: references، mutability/actions، field/query policy، cycles وoutput schema.</li>
+<li>ربط EasyQuery عبر Adapter إلى SkyQueryPlan.</li>
+<li>توحيد Grid/Report/Dashboard على DataSourceRef وControlled Query Runtime.</li>
+<li>إضافة Component Registry وView-specific presentation ثم Screen Studio builders.</li>
+<li>إضافة AI typed planner/skills بعد استقرار العقود والـvalidators.</li>
+<li>تفعيل publish/approve/sign/cache/rollback ومجموعة conformance tests.</li>
+</ol><p><strong>ليس ضمن هذه المرحلة:</strong> تنفيذ Production code، Fork لـNocoBase، React runtime pivot، أو تنفيذ SQL مولدة من AI مباشرة.</p></section>
+
+<section class="card"><h2>قرارات مفتوحة للنقاش واحدًا واحدًا</h2><ol><li>هل Controller وField Catalog artifact واحد أم عقدان قابلان لإعادة الاستخدام؟</li><li>هل View يمكن مشاركتها بين Screens أم presentation فقط هي القابلة للمشاركة؟</li><li>ما minimum capability vocabulary للنسخة الأولى؟</li><li>أين يعيش record-level predicate: Controller policy أم DataSource policy؟</li><li>ما format Runtime Snapshot وكيف تُدار migrations والتوقيعات؟</li></ol><p>راجع <a href="review/discussion-roadmap/index.html">خارطة النقاش</a>، <a href="review/golden-controller-questionnaire/index.html">مخزن المراجعة</a>، و<a href="adr/0008-screen-definition-package.html">ADR-0008</a>.</p></section>
+</main><footer>SKY365 Architecture Hub · Target contract; not an implementation claim.</footer>
+</body></html>
