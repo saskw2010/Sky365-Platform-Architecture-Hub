@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>مراجعة Golden Controller — سؤال بسؤال</title><link rel="stylesheet" href="../../assets/site.css"></head>
+<body>
+<header class="site-header"><div class="container"><a href="../../index.html">SKY365 Architecture Hub</a> / مخزن المراجعة</div></header>
+<main class="container">
+  <section class="hero"><p class="eyebrow">LIVING REVIEW LEDGER</p><h1>مراجعة Golden Controller — سؤال بسؤال</h1><p>هذا هو المخزن الدائم للحوار التصحيحي. نراجع نقطة واحدة فقط في كل مرة، نسجل إجابة مالك المنصة، ثم نحدّث التقرير قبل الانتقال للنقطة التالية.</p></section>
+  <section><h2>قواعد المراجعة</h2><ol><li>سؤال واحد فقط في كل دور.</li><li>إجابة مالك المنصة هي تفسير القصد المعماري، ويظل كود المصدر هو دليل التنفيذ.</li><li>كل إجابة تسجل مع أثرها على التقرير.</li><li>لا ننتقل إلى السؤال التالي إلا بعد اعتماد التصحيح.</li></ol></section>
+  <section><h2>Q001 — مكانة Code On Time</h2>
+    <table><tbody>
+      <tr><th>الحالة</th><td>تمت الإجابة والتسجيل</td></tr>
+      <tr><th>السؤال الذي كشف الالتباس</th><td>هل Code On Time XML مصدر توليد وتشغيل للـController الداخلي، أم مجرد مرجع خارجي؟</td></tr>
+      <tr><th>إجابة مالك المنصة</th><td><strong>Code On Time خارجي، وملفاته مجرد Reference.</strong> الهدف هو استبداله بقدرات داخل ERP الخاص بـSKY365.</td></tr>
+      <tr><th>القرار المعماري المصحح</th><td>SKY365 internal metadata هي المصدر المعتمد للـController والـRuntime. ملفات COT لا تحكم التشغيل ولا يُفترض أن تكون أصل توليد الـJSON.</td></tr>
+      <tr><th>دور COT الصحيح</th><td>Baseline للمقارنة وقياس تغطية الاستبدال فقط.</td></tr>
+      <tr><th>أثر التصحيح</th><td>تغيير مسار الرسم، واستبدال مفهوم <em>COT fidelity/lineage</em> بمفهوم <em>COT replacement coverage</em>.</td></tr>
+      <tr><th>التقرير المتأثر</th><td><a href="../../evidence/golden-controller-audit-2026-07-17/index.html">Golden Controller Audit</a></td></tr>
+    </tbody></table>
+  </section>
+  <section><h2>السؤال التالي</h2><p>لم يُطرح بعد. ننتظر اعتماد Q001 أولًا.</p></section>
+</main>
+<footer class="site-footer"><div class="container">SKY365 Platform Architecture Hub · Owner-reviewed architecture</div></footer>
+</body></html>

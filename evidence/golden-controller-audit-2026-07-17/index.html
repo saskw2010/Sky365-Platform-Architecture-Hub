@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SKY365 Golden Controller Audit — TplMdTrsQuotation</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <style>
+    .hero-result{font-size:1.15rem}.pass{color:#58d68d}.partial{color:#f4d03f}.fail{color:#ec7063}.na{color:#aab7b8}
+    table{font-size:.92rem}.score{font-size:2.3rem;font-weight:800}.evidence{font-family:ui-monospace,monospace;font-size:.82rem}
+    .pill{display:inline-block;padding:.2rem .55rem;border:1px solid currentColor;border-radius:999px;margin:.1rem}
+  </style>
+</head>
+<body>
+<header class="site-header"><div class="container"><a href="../../index.html">SKY365 Architecture Hub</a> / Evidence / Golden Controller Audit</div></header>
+<main class="container">
+  <section class="hero">
+    <p class="eyebrow">SOURCE-BASED ARCHITECTURE AUDIT · 2026-07-17</p>
+    <h1>Golden Controller: <code>TplMdTrsQuotation</code></h1>
+    <p class="hero-result"><strong>Verdict B</strong> — functionally complete in source; operational proof incomplete.</p>
+    <div class="grid cards">
+      <article class="card"><div class="score">76%</div><p>weighted completion</p></article>
+      <article class="card"><h3>Customer demo</h3><p class="partial">Conditional readiness</p></article>
+      <article class="card"><h3>Production</h3><p class="na">Not evaluated</p></article>
+      <article class="card"><h3>Largest blocker</h3><p>No repeatable authenticated runtime evidence pack.</p></article>
+    </div>
+    <p><strong>Next smallest action:</strong> execute one scripted, read-safe authenticated quotation walkthrough in a disposable/UAT database and retain screenshots plus request/response and audit trace IDs. This report does not implement that action.</p>
+  </section>
+
+  <section><h2>Audit boundary and evidence policy</h2>
+    <p>The production repository was inspected read-only at Git commit <code>8310806dd5df362f332d1c4990130e610d77598c</code>, branch <code>Revolutions</code>. The working tree contained pre-existing user changes; therefore evidence is labelled <em>repository source</em> or <em>working-tree source</em>. No database mutation or production code change was performed. A source path proves design/implementation presence, not successful runtime execution.</p>
+    <p><span class="pill pass">Pass = direct evidence</span><span class="pill partial">Partial = source present, runtime proof absent/incomplete</span><span class="pill fail">Fail = contrary evidence</span><span class="pill na">N/E = not evaluated</span></p>
+  </section>
+
+  <section><h2>Candidate selection</h2>
+    <table><thead><tr><th>Rank</th><th>Controller</th><th>Why it ranked</th><th>Decision</th></tr></thead><tbody>
+      <tr><td>1</td><td><code>TplMdTrsQuotation</code></td><td>17 fields; five lookups; master-detail; workflow; wizard; two reports; business actions; five module placements; API and AI generic surfaces.</td><td class="pass">Selected</td></tr>
+      <tr><td>2</td><td><code>TplFnMstContract</code></td><td>19 fields and quotation dependency; fewer directly evidenced lifecycle integrations.</td><td class="partial">Shortlist</td></tr>
+      <tr><td>3</td><td><code>TplMdMstProvider</code></td><td>19 fields, an external COT reference and multi-module catalog presence; primarily master data.</td><td class="partial">Shortlist</td></tr>
+    </tbody></table>
+    <p>Selection rule: catalog/runtime eligibility (20%), metadata/UI richness (15%), CRUD and business lifecycle (20%), security (10%), workflow/report/dashboard (15%), API/AI integration (10%), and repeatable runtime evidence (10%). The catalog contains 144 nodes; raw schema size was not accepted as eligibility.</p>
+  </section>
+
+  <section><h2>End-to-end trace</h2>
+    <pre class="diagram">External Code On Time XML (comparison/reference only)
+  ↘ replacement coverage review
+SKY365 internal controller metadata (authoritative inside the ERP)
+  → salogi-system/Schemas/TplMdTrsQuotation.json
+  → module catalogs → unified controllers.catalog.json
+  → /sky365-dynamic/runtime/vgem3/schema/TplMdTrsQuotation
+  → RuntimeVGem3 + Sky365DynamicRuntimeService
+  → generic CRUD /api/dynamic/{schemaName}/rows
+  → Workflow Salogi_QuoteRequest + report templates
+  → DynamicToolGateway → MCP /mcp and /sky365mcp</pre>
+    <p>The runtime is metadata-driven, consistent with the MDAP assumption: SKY365's internal metadata is the authoritative runtime source. The external Code On Time XML is retained only as a reference to verify replacement coverage while SKY365 replaces Code On Time inside its own ERP. Workflow definitions and report templates live in separate internal metadata files; bespoke quotation code also exists in the runtime page and wizard service, so not every behavior derives solely from the Controller JSON.</p>
+  </section>
+
+  <section><h2>G01–G25 screen gate</h2>
+    <table><thead><tr><th>Gate</th><th>Check</th><th>Verdict</th><th>Evidence summary</th></tr></thead><tbody>
+      <tr><td>G01</td><td>External COT reference retained</td><td class="pass">Pass</td><td>Comparison input only: <code>Features/Salogi/CodeOnTimeControllers/TplMdTrsQuotation.xml:2</code></td></tr>
+      <tr><td>G02</td><td>Converted JSON exists</td><td class="pass">Pass</td><td><code>sky365-dynamic/salogi-system/Schemas/TplMdTrsQuotation.json</code></td></tr>
+      <tr><td>G03</td><td>Unified catalog discovery</td><td class="pass">Pass</td><td>Runtime entries across client/provider/admin/ops/merchant.</td></tr>
+      <tr><td>G04</td><td>Module-aware route</td><td class="pass">Pass</td><td>Navigation snapshot retains systemgroup and module.</td></tr>
+      <tr><td>G05</td><td>List UI</td><td class="partial">Partial</td><td>Runtime route/component in source; no captured execution.</td></tr>
+      <tr><td>G06</td><td>Create form</td><td class="partial">Partial</td><td>16 form-visible fields; runtime execution not captured.</td></tr>
+      <tr><td>G07</td><td>Edit form</td><td class="partial">Partial</td><td>Generic update path present.</td></tr>
+      <tr><td>G08</td><td>Delete behavior</td><td class="partial">Partial</td><td>Generic delete endpoint/service present; policy UX unproved.</td></tr>
+      <tr><td>G09</td><td>Lookups</td><td class="pass">Pass</td><td>Country, unit, category, status, client, warehouse metadata.</td></tr>
+      <tr><td>G10</td><td>Validation</td><td class="partial">Partial</td><td>Required/max-length metadata exists; execution unproved.</td></tr>
+      <tr><td>G11</td><td>Defaults</td><td class="pass">Pass</td><td>Country 96, rental unit 2, duration 1.</td></tr>
+      <tr><td>G12</td><td>Search/filter</td><td class="partial">Partial</td><td>Generic search parameter exists; SQL-LIKE implementation, no run.</td></tr>
+      <tr><td>G13</td><td>Sort/paging</td><td class="partial">Partial</td><td>Default sort is <code>Id DESC</code>; runtime paging proof absent.</td></tr>
+      <tr><td>G14</td><td>Master-detail</td><td class="pass">Pass</td><td><code>DetailSchemas: TplMdTrsQuotationLine</code>.</td></tr>
+      <tr><td>G15</td><td>Business actions</td><td class="pass">Pass</td><td>Convert-to-client and convert-to-contract stored procedures.</td></tr>
+      <tr><td>G16</td><td>Post-save behavior</td><td class="pass">Pass</td><td>Enabled accepted-quotation auto-conversion plus service executor.</td></tr>
+      <tr><td>G17</td><td>Workflow</td><td class="pass">Pass</td><td><code>Salogi_QuoteRequest</code> maps to entity table.</td></tr>
+      <tr><td>G18</td><td>Print/report</td><td class="pass">Pass</td><td>Standard and tabular report templates in five modules.</td></tr>
+      <tr><td>G19</td><td>Dashboard</td><td class="fail">Fail</td><td>No controller-specific dashboard binding found.</td></tr>
+      <tr><td>G20</td><td>Role metadata</td><td class="pass">Pass</td><td>Catalog placements carry role restrictions.</td></tr>
+      <tr><td>G21</td><td>Fail-closed authorization</td><td class="fail">Fail</td><td>Module authorization returns true when roles absent or errors occur.</td></tr>
+      <tr><td>G22</td><td>Audit trail</td><td class="partial">Partial</td><td>AI database-call tracing exists; CRUD-specific durable audit unproved.</td></tr>
+      <tr><td>G23</td><td>OpenAPI/Swagger</td><td class="pass">Pass</td><td>Per-schema OpenAPI and Swagger endpoints.</td></tr>
+      <tr><td>G24</td><td>AI/MCP tool access</td><td class="pass">Pass</td><td>Authenticated MCP surfaces use DynamicToolGateway.</td></tr>
+      <tr><td>G25</td><td>Repeatable customer proof</td><td class="fail">Fail</td><td>No retained authenticated end-to-end evidence pack found.</td></tr>
+    </tbody></table>
+  </section>
+
+  <section><h2>Technical matrices</h2>
+    <h3>CRUD</h3><table><thead><tr><th>Operation</th><th>Route/service</th><th>Source</th><th>Runtime</th></tr></thead><tbody>
+      <tr><td>List/Search</td><td>GET rows; runtime list</td><td class="pass">Present</td><td class="partial">Unproved</td></tr><tr><td>Read</td><td>GET rows/{id}; GetByIdAsync</td><td class="pass">Present</td><td class="partial">Unproved</td></tr><tr><td>Create</td><td>POST rows; CreateAsync + details + post-save</td><td class="pass">Present</td><td class="partial">Unproved</td></tr><tr><td>Update</td><td>PUT rows/{id}; UpdateAsync</td><td class="pass">Present</td><td class="partial">Unproved</td></tr><tr><td>Delete</td><td>DELETE rows/{id}; DeleteAsync</td><td class="pass">Present</td><td class="partial">Unproved</td></tr>
+    </tbody></table>
+    <h3>Permissions</h3><table><thead><tr><th>Surface</th><th>Control</th><th>Verdict</th></tr></thead><tbody>
+      <tr><td>Dynamic API</td><td><code>AdminAccess</code> group policy</td><td class="pass">Protected</td></tr><tr><td>Module/runtime</td><td>AllowedRoles resolved from registry</td><td class="fail">Fail-open default</td></tr><tr><td>Internal MCP</td><td>Authenticated cookie principal</td><td class="pass">Protected</td></tr><tr><td>External MCP</td><td><code>Sky365McpExternal</code></td><td class="partial">Policy present; deployment proof absent</td></tr><tr><td>Controller tools</td><td>Gateway role enforcement</td><td class="partial">Source present; negative tests absent</td></tr>
+    </tbody></table>
+    <h3>Audit / observability</h3><table><thead><tr><th>Event</th><th>Evidence</th><th>Verdict</th></tr></thead><tbody>
+      <tr><td>AI database call</td><td>Trace ID, sequence, transaction and rows updated recorded</td><td class="pass">Present</td></tr><tr><td>Generic CRUD mutation</td><td>No quotation-specific durable before/after audit proven</td><td class="partial">Gap</td></tr><tr><td>Workflow transition</td><td>Workflow engine exists; retained trace not inspected</td><td class="partial">Unproved</td></tr><tr><td>Customer demo correlation</td><td>No evidence bundle with trace IDs</td><td class="fail">Missing</td></tr>
+    </tbody></table>
+    <h3>API</h3><table><thead><tr><th>Capability</th><th>Verdict</th><th>Notes</th></tr></thead><tbody>
+      <tr><td>Catalog</td><td class="pass">Pass</td><td><code>GET /api/dynamic/controllers/catalog</code></td></tr><tr><td>CRUD</td><td class="pass">Source</td><td>Five generic routes parameterized by schema.</td></tr><tr><td>OpenAPI</td><td class="pass">Pass</td><td>Per-controller JSON description.</td></tr><tr><td>Swagger UI</td><td class="pass">Pass</td><td>Per-controller UI route.</td></tr><tr><td>Module key preservation</td><td class="pass">Pass</td><td>Catalog/navigation URLs include module context.</td></tr><tr><td>Runtime response proof</td><td class="partial">Absent</td><td>No authenticated request/response captured.</td></tr>
+    </tbody></table>
+    <h3>Workflow / report / dashboard / AI</h3><table><thead><tr><th>Domain</th><th>Binding</th><th>Verdict</th></tr></thead><tbody>
+      <tr><td>Workflow</td><td><code>Salogi_QuoteRequest</code> → <code>Wms.TplMdTrsQuotation</code></td><td class="pass">Direct</td></tr><tr><td>Reports</td><td>Standard Arabic + tabular Arabic, including detail rows</td><td class="pass">Direct</td></tr><tr><td>Dashboard</td><td>No direct controller binding located</td><td class="fail">Missing</td></tr><tr><td>AI tools</td><td>Generic catalog/row gateway</td><td class="pass">Applicable</td></tr><tr><td>MCP</td><td>Internal and external endpoints</td><td class="partial">Source only</td></tr><tr><td>Semantic/vector</td><td>No controller-specific semantic mapping or vector sync</td><td class="fail">Missing</td></tr>
+    </tbody></table>
+  </section>
+
+  <section><h2>Code On Time replacement coverage</h2>
+    <p>This is a replacement-coverage comparison, not a source-lineage or generation-fidelity score. Code On Time is external and its XML is reference material; SKY365's internal Controller metadata is authoritative. <strong>Formula:</strong> 25% identity/table + 25% field coverage + 15% lookup coverage + 15% view/action replacement + 10% validation replacement + 10% relationship replacement.</p>
+    <table><thead><tr><th>Dimension</th><th>Weight</th><th>Finding</th><th>Score</th></tr></thead><tbody>
+      <tr><td>Identity/table</td><td>25</td><td>Name and Wms table align.</td><td>25</td></tr><tr><td>Fields</td><td>25</td><td>Internal metadata covers core reference fields and adds ERP-owned business fields.</td><td>16</td></tr><tr><td>Lookups</td><td>15</td><td>Client/warehouse/status reference capabilities plus internal lookups.</td><td>11</td></tr><tr><td>Views/actions</td><td>15</td><td>Internal runtime actions exist; full replacement parity remains unproved.</td><td>7</td></tr><tr><td>Validation</td><td>10</td><td>Required/max-length metadata exists; complete replacement coverage unproved.</td><td>5</td></tr><tr><td>Relationships</td><td>10</td><td>Internal master-detail support is present and operationally meaningful.</td><td>7</td></tr><tr><th colspan="3">Replacement coverage</th><th>71/100</th></tr>
+    </tbody></table>
+    <p>The score asks how much of the external product's referenced capability SKY365 has replaced internally. It does not claim that the internal JSON was generated from XML, nor that XML governs runtime behavior.</p>
+  </section>
+
+  <section><h2>P01–P13 business priority verdicts</h2>
+    <table><thead><tr><th>Priority</th><th>Business proof</th><th>Verdict</th></tr></thead><tbody>
+      <tr><td>P01</td><td>Customer lead captured</td><td class="pass">Pass</td></tr><tr><td>P02</td><td>Country/rental/product request captured</td><td class="pass">Pass</td></tr><tr><td>P03</td><td>Status lifecycle</td><td class="pass">Pass</td></tr><tr><td>P04</td><td>Multi-line quotation</td><td class="pass">Pass</td></tr><tr><td>P05</td><td>Warehouse association</td><td class="pass">Pass</td></tr><tr><td>P06</td><td>Convert accepted lead to client</td><td class="pass">Pass</td></tr><tr><td>P07</td><td>Convert quotation to contract</td><td class="pass">Pass</td></tr><tr><td>P08</td><td>Approval/workflow route</td><td class="pass">Pass</td></tr><tr><td>P09</td><td>Printable customer document</td><td class="pass">Pass</td></tr><tr><td>P10</td><td>Role-specific access</td><td class="partial">Partial — fail-open concern</td></tr><tr><td>P11</td><td>Operational audit</td><td class="partial">Partial</td></tr><tr><td>P12</td><td>AI/tool operation</td><td class="partial">Source only</td></tr><tr><td>P13</td><td>Repeatable customer demonstration</td><td class="fail">Not proven</td></tr>
+    </tbody></table>
+  </section>
+
+  <section><h2>Final classification</h2>
+    <ul><li><strong>A — complete and customer-demonstrable:</strong> not met.</li><li><strong>B — functionally complete, operational proof incomplete:</strong> <strong>selected verdict</strong>.</li><li><strong>C — partial:</strong> exceeded because all major business domains except dashboard/semantic are connected in source.</li><li><strong>D — no single Controller:</strong> rejected; quotation provides a credible unifying slice.</li></ul>
+  </section>
+
+  <section><h2>Readiness checklists</h2>
+    <h3>Customer demo</h3><ul><li>☐ Pin a clean build/revision and UAT database snapshot.</li><li>☐ Authenticate as each intended role and one forbidden role.</li><li>☐ List/search, create header + line, edit, print, advance workflow, convert to client/contract.</li><li>☐ Capture browser screenshots, API responses, generated report and trace IDs.</li><li>☐ Reset data and repeat from the same script.</li></ul>
+    <h3>Repeatability</h3><ul><li>☐ Seed prerequisites/lookups idempotently.</li><li>☐ Define expected IDs/status transitions and cleanup policy.</li><li>☐ Record environment variables without secrets.</li><li>☐ Assert authorization denial rather than only successful access.</li><li>☐ Store dated evidence alongside this report.</li></ul>
+  </section>
+
+  <section><h2>Evidence ledger</h2>
+    <table><thead><tr><th>Claim</th><th>Repository / revision</th><th>Path and symbol/line</th><th>Type</th><th>Confidence</th></tr></thead><tbody>
+      <tr><td>External COT reference</td><td>Sky365Offers @ 8310806d</td><td class="evidence">Features/Salogi/CodeOnTimeControllers/TplMdTrsQuotation.xml:2</td><td>Comparison reference; not runtime authority</td><td>High</td></tr>
+      <tr><td>Metadata lifecycle</td><td>Working tree at audit time</td><td class="evidence">sky365-dynamic/salogi-system/Schemas/TplMdTrsQuotation.json:2,8–12,308,344</td><td>Source metadata</td><td>High</td></tr>
+      <tr><td>Workflow binding</td><td>Working tree at audit time</td><td class="evidence">sky365-dynamic/salogi-system/Workflows/WfWorkflowDefinitions.json:853,859</td><td>Source metadata</td><td>High</td></tr>
+      <tr><td>CRUD/API</td><td>Working tree at audit time</td><td class="evidence">Program.cs:656–658,660,873–910</td><td>Source implementation</td><td>High design / Low runtime</td></tr>
+      <tr><td>Post-save execution</td><td>Working tree at audit time</td><td class="evidence">Sky365DynamicRuntimeService.cs:1020–1175</td><td>Source implementation</td><td>High design / Low runtime</td></tr>
+      <tr><td>Authorization risk</td><td>Working tree at audit time</td><td class="evidence">Sky365DynamicRuntimeService.cs:265–282</td><td>Source implementation</td><td>High</td></tr>
+      <tr><td>MCP surfaces</td><td>Working tree at audit time</td><td class="evidence">Program.cs:647–654; DynamicToolGateway.cs:30,81,321–374</td><td>Source implementation</td><td>High design / Low runtime</td></tr>
+      <tr><td>Report assets</td><td>Working tree at audit time</td><td class="evidence">salogi-{client,provider,admin,ops,merchant}/Assets/Reports/*quotation*.json</td><td>Source metadata</td><td>High</td></tr>
+    </tbody></table>
+    <p><strong>Runtime distinction:</strong> no successful authenticated application session, database transaction, generated report, or MCP call was observed during this audit. All such claims are deliberately marked partial/unproved.</p>
+  </section>
+</main>
+<footer class="site-footer"><div class="container">SKY365 Platform Architecture Hub · Evidence, not implementation</div></footer>
+</body></html>
