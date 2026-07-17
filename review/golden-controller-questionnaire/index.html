@@ -70,6 +70,18 @@
       <tr><td>Q003</td><td>Semantic Mapper</td><td>أين يعيش mapping وSemantic Mapper بالنسبة إلى Controller: داخل schema، segment مستقل، compiler stage، أم Semantic Engine؟</td><td>مسجل، لم يُدرس</td></tr>
       <tr><td>Q004</td><td>Worker Engine</td><td>هل يوجد في الكود Worker Runtime وWorker Builder وRunner؟ ما JSON الذي يقرؤه؟ وكيف يربط كل Worker بالـController والـschedule والـservice والـparameters والتوثيق؟</td><td>مسجل، لم يُدرس</td></tr>
       <tr><td>Q005</td><td>BI / Dashboard</td><td>هل تعريف BI الخاص بالـController يكون Controller segment، أم JSON Dashboard مستقلًا مع tags/relations داخل Controller؟ وكيف نفصل static generation عن dynamic engine segments؟</td><td>مسجل، لم يُدرس</td></tr>
+      <tr><td>Q006</td><td>Platform Engine Census</td><td>ما العدد الكامل للمحركات الفعلية؟ وما الفرق بين Engine وRuntime وService وBuilder وUI capability وTheme capability؟ وهل UI وTheme محركان مستقلان أم أجزاء من محرك العرض؟</td><td>بدأ الجرد؛ الإحصاء النهائي لم يكتمل</td></tr>
+    </tbody></table>
+  </section>
+  <section><h2>Q006 — قاعدة تصنيف المحركات والإحصاء الأولي</h2>
+    <table><tbody>
+      <tr><th>هل مهمة اكتشاف كل المحركات انتهت؟</th><td><strong>لا.</strong> المكتمل حتى الآن مراجعة مركزة حول Controller وConverter وGroup وبعض مسارات الـDynamic Runtime. لا يوجد بعد Engine Catalog نهائي يغطي النظام كله.</td></tr>
+      <tr><th>المثبت باسم Engine في كود التشغيل</th><td>سبعة implementations أولية: <code>WorkflowEngineService</code>، <code>PivotAnalyticsEngine</code>، <code>DynamicBusinessRuleEngine</code>، <code>DynamicIntegrationEngine</code>، <code>DynamicPersistenceEngine</code>، <code>DynamicReportFilterEngine</code>، و<code>MascotPolicyEngineService</code>. هذا <strong>ليس العدد النهائي</strong> لأن بعض المحركات قد تحمل اسم Runtime/Service، وبعض الأسماء Engine قد تكون صفحة UI فقط.</td></tr>
+      <tr><th>أجزاء Runtime قوية مرشحة للتصنيف</th><td><code>Sky365DynamicRuntimeService</code> و<code>VisualQueryRuntimeService</code> ومسارات Runtime VGem3/VGpt5/Index. يلزم تحليل المسؤوليات قبل عدّها كمحركات مستقلة أو runtime profiles لمحرك واحد.</td></tr>
+      <tr><th>هل UI أصبح Engine؟</th><td>ليس تلقائيًا. يصبح <strong>UI Engine</strong> عندما توجد metadata للشاشات والـlayout، renderer/runtime يفسرها، lifecycle، component registry وextension points. مجموعة Razor components وحدها ليست محركًا. الـDynamic UI الحالي مرشح قوي، لكن حدوده مع Controller Runtime لم تُحسم.</td></tr>
+      <tr><th>هل Theme/الألوان Engine؟</th><td>ليس تلقائيًا. الموجود المثبت يتضمن <code>ThemeCssBuilder</code> وخدمات theming؛ هذا Builder/Service ما لم يثبت وجود Theme metadata وresolution lifecycle وinheritance/tokens وruntime application وextension contract. قد يصنف لاحقًا <strong>Theme Engine</strong> أو subsystem تابعًا لـUI Engine.</td></tr>
+      <tr><th>علاقة Engine بالـServices</th><td>المحرك Capability وحدود تشغيل، وليس شرطًا أن يساوي Class واحدة أو Service واحدة. قد يديره Orchestrator Service ومعه عدة خدمات متخصصة وBuilders وRunners وRepositories. وقد تشارك خدمة بنية تحتية — مثل metadata أو security — بين عدة محركات. المطلوب منع Service واحدة عملاقة تدير النظام كله ومنع تسمية كل Service بأنها Engine.</td></tr>
+      <tr><th>شرط العد النهائي</th><td>لكل مرشح نسجل: purpose، metadata/input، output، runtime entry point، services، dependencies، lifecycle، extension points، ودليل المصدر؛ ثم نصنفه Confirmed Engine أو Engine Subsystem أو Supporting Service/Builder أو UI Page فقط.</td></tr>
     </tbody></table>
   </section>
   <section><h2>Q002 — فحص الوضع الحالي من المصدر</h2>
