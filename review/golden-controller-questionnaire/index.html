@@ -29,14 +29,16 @@
   <section><h2>Q001-A — سياق Import From Other Platform Engine</h2>
     <table><tbody>
       <tr><th>تصحيح الاسم والنطاق</th><td>القدرة المقصودة ليست Converter خاصًا بـCode On Time. الاسم المعماري الذي حدده مالك المنصة هو <strong>Import From Other Platform Engine</strong>، ويُفترض أن يستوعب عدة source adapters.</td></tr>
-      <tr><th>الوضع الحالي حسب المالك</th><td>تمت كتابة قائمة بالأدوات/المنصات المراد الاستيراد منها. ذُكر Code On Time وRadzen، ومصدر ثالث نُطق اسمه تقريبًا «Optility» ويحتاج تثبيت الاسم المكتوب. كما بدأ مسار Import From Database Schema.</td></tr>
-      <tr><th>الوضع المثبت من الكود</th><td>يوجد مسار فعلي لاستيراد Code On Time XML، ومسار لتوليد <code>SysController</code> من جدول/عرض في قاعدة البيانات. لم يعثر الفحص الحالي على Adapter مثبت بالاسم لاستيراد Radzen أو «Optility»؛ وجود مكتبة Radzen كواجهة UI لا يثبت وجود importer منها.</td></tr>
+      <tr><th>الوضع الحالي حسب المالك</th><td>تمت كتابة قائمة بالأدوات/المنصات المراد الاستيراد منها: Code On Time وRadzen وObout، بالإضافة إلى Import From Database Schema.</td></tr>
+      <tr><th>الاسم الثالث المثبت</th><td><strong>Obout</strong>. تم تثبيته من صفحة الرؤية الداخلية <code>sky365-studio-pitch.html</code>، وليس «Optility».</td></tr>
+      <tr><th>الرؤية المكتوبة</th><td>الصفحة تسمي القدرة <strong>Multi-Source Import Engine</strong> وتحدد المصادر: <code>CodeOnTime + Radzen + Obout + SQL direct</code>، وتصف الناتج بأنه JSON Schema موحد، مع حالة «قيد التطوير».</td></tr>
+      <tr><th>الوضع المثبت من الكود</th><td>يوجد مسار فعلي لاستيراد Code On Time XML، ومسار لتوليد <code>SysController</code> من جدول/عرض في قاعدة البيانات. يوجد <code>_templates/RadzenMigration</code> كقوالب هجرة، لكن لم يثبت فحص هذه الجولة وجود Adapter موحد يشغّل استيراد Radzen أو Obout إلى canonical schema.</td></tr>
       <tr><th>Database Schema الحالي</th><td><code>GenerateFromDatabaseTableAsync</code> يقرأ schema عبر اتصال EF، لكنه يستخدم صيغة SQL Server المحددة <code>SELECT TOP 0 ...</code> وbracket quoting. لذلك التطبيق المثبت حاليًا SQL Server-oriented.</td></tr>
       <tr><th>الطبيعي / المرجعي</th><td>كل منصة خارجية أو نوع قاعدة بيانات يكون Source Adapter مستقلًا، ثم يحول نموذجه إلى Canonical SKY365 Controller Model واحد بدل إدخال منطق كل منصة داخل الـRuntime.</td></tr>
       <tr><th>الهدف</th><td>دعم استيراد تطبيقات/Controllers من منصات خارجية متعددة، ودعم schema discovery من عدة أنواع قواعد بيانات، مع أن أول implementation لقاعدة البيانات هو SQL Server.</td></tr>
       <tr><th>أثره على Q002</th><td>قرار SQL Commands يجب أن يكون جزءًا من canonical import contract وسياسة capabilities، لا استثناءً خاصًا بـCOT. كل Adapter يعلن ما اكتشفه وما حوّله وما لم يدعمه.</td></tr>
-      <tr><th>أسئلة مفتوحة</th><td>تثبيت اسم المصدر الثالث؛ تحديد قائمة Source Adapters المخطط لها؛ تحديد أنواع قواعد البيانات التالية بعد SQL Server؛ ومعرفة هل Radzen المقصود Radzen-generated application metadata أم مجرد UI/code project import.</td></tr>
-      <tr><th>دليل المصدر</th><td><code>DynamicControllerOnboardingService.cs:37–215</code>؛ <code>SysControllerImport.razor:80–117</code>؛ <code>ISysControllerConfigService.cs:58–73</code>؛ <code>SysControllerConfigService.cs:222–289</code>.</td></tr>
+      <tr><th>أسئلة مفتوحة</th><td>تحديد Contract كل Adapter؛ تحديد أنواع قواعد البيانات التالية بعد SQL Server؛ وتحديد شكل مدخل Radzen وObout: metadata/project files أم تحليل generated code/UI.</td></tr>
+      <tr><th>دليل المصدر</th><td><code>sky365-studio-pitch.html:829–855</code>؛ <code>_templates/RadzenMigration/**</code>؛ <code>DynamicControllerOnboardingService.cs:37–215</code>؛ <code>SysControllerImport.razor:80–117</code>؛ <code>ISysControllerConfigService.cs:58–73</code>؛ <code>SysControllerConfigService.cs:222–289</code>.</td></tr>
     </tbody></table>
   </section>
   <section><h2>Decision Backlog الناتج عن القصة</h2>
