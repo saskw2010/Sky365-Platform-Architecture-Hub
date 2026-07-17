@@ -41,6 +41,18 @@
       <tr><th>دليل المصدر</th><td><code>sky365-studio-pitch.html:829–855</code>؛ <code>_templates/RadzenMigration/**</code>؛ <code>DynamicControllerOnboardingService.cs:37–215</code>؛ <code>SysControllerImport.razor:80–117</code>؛ <code>ISysControllerConfigService.cs:58–73</code>؛ <code>SysControllerConfigService.cs:222–289</code>.</td></tr>
     </tbody></table>
   </section>
+  <section><h2>Q001-B — React Visual Builder Comparator</h2>
+    <table><tbody>
+      <tr><th>الحالة</th><td>قصة المالك مسجلة؛ اسم المنتج لم يُثبت بعد.</td></tr>
+      <tr><th>الوضع المرجعي</th><td>توجد منصة مقارنة تبني الشاشات من JSON/metadata، وتمتاز بوجود Visual Layout UI، بينما renderer/model الخاص بها مبني على React.</td></tr>
+      <tr><th>ملاحظة السوق</th><td>منظومة أدوات AI وvibe coding تنتج React بسرعة بسبب اتساع ecosystem والقوالب والبيانات التدريبية المتاحة؛ هذه أفضلية سرعة tooling وليست حكمًا بأن React هو النموذج المعماري الصحيح لـSKY365.</td></tr>
+      <tr><th>موقف المالك</th><td>المالك لا يريد تحويل SKY365 إلى React؛ يريد بناء الـUI والـVisual Designer باستخدام Blazor، مع ناتج منظم داخل .NET assemblies ومنظومة تقنية موحدة.</td></tr>
+      <tr><th>الهدف</th><td>إغلاق فجوة Visual Layout Designer وسرعة التوليد داخل Blazor، مع الحفاظ على Metadata-Driven Runtime وJSON definitions، بدل تغيير الـruntime إلى React فقط لأن أدوات AI تولده أسرع.</td></tr>
+      <tr><th>تصحيح أمني</th><td>الأمان لا ينتج تلقائيًا من React أو Blazor. أي كود يعمل في المتصفح — JavaScript أو WebAssembly assembly — يجب اعتباره غير موثوق. صلاحيات البيانات والتنفيذ والتحقق من المدخلات يجب فرضها على الخادم. أفضلية Blazor هنا هي توحيد .NET والنماذج والأنواع وقابلية الحوكمة، وليست سرية assembly في المتصفح.</td></tr>
+      <tr><th>قرار مبدئي</th><td><strong>لا React pivot.</strong> يُعامل المنتج الخارجي كمرجع capabilities للـlayout/design experience، بينما يبقى Target Renderer الخاص بـSKY365 هو Blazor ما لم يصدر قرار معماري لاحق يغير ذلك.</td></tr>
+      <tr><th>استفسار مفتوح</th><td>تثبيت اسم/رابط المنتج المقصود، ثم مقارنة JSON model وlayout designer وcomponent registry وruntime معه مقارنة مباشرة.</td></tr>
+    </tbody></table>
+  </section>
   <section><h2>Decision Backlog الناتج عن القصة</h2>
     <table><thead><tr><th>رقم</th><th>محور الدراسة</th><th>الاستفسار المسجل</th><th>الحالة</th></tr></thead><tbody>
       <tr><td>Q002</td><td>Converter / SQL Commands</td><td>ما أنواع SQL Commands الموجودة في COT Controller؟ ماذا يفقد الـConverter حاليًا؟ وهل يجب تحويلها إلى metadata أو actions أو طبقة آمنة أخرى؟</td><td>التالي للدراسة</td></tr>
