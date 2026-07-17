@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>EasyQuery and Blazer Querygen Assessment</title>
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<header>
+  <a href="../index.html">Back to Hub</a>
+  <span class="badge">External capability assessment · 2026-07-17</span>
+  <h1>Korzh EasyQuery + SonicGarden Blazer::Querygen</h1>
+  <p>Purpose: determine which existing capability should become the SKY365 visual query foundation, what should be learned from AI-to-SQL projects, and whether SonicGarden/blazer-querygen warrants a production fork.</p>
+</header>
+<main>
+<section class="hero">
+  <h2>Executive judgment</h2>
+  <p><strong>Korzh EasyQuery is already the closest executable foundation inside SKY365.</strong> It provides a structured query model, visual authoring, backend query generation and an existing integration path. <strong>SonicGarden/blazer-querygen should not be forked as the SKY365 production base.</strong> It is a Ruby on Rails plugin for the unrelated Blazer BI product, not a Blazor/.NET component.</p>
+  <p>The useful combination is:</p>
+  <div class="diagram">Natural-language request
+        |
+        v
+SKY365 Semantic Mapper / NL Query Planner
+        |
+        v
+Canonical SkyQueryPlan or EasyQuery-compatible Query JSON
+        |
+        v
+EasyQuery visual editor + human correction
+        |
+        v
+Policy + tenant + permissions + cost controls
+        |
+        v
+Provider compiler -> parameterized SQL / other target
+        |
+        v
+Preview -> execute -> audit</div>
+</section>
+
+<section class="card">
+  <h2>1. Verified SKY365 EasyQuery baseline</h2>
+  <table>
+    <tbody>
+      <tr><th>UI integration</th><td><code>QueryDesignerPanel.razor</code> invokes <code>sky365.initEasyQuery</code> and returns both <code>QueryJson</code> and generated SQL.</td></tr>
+      <tr><th>Server integration</th><td><code>Program.cs</code> registers <code>AddEasyQuery</code> and maps EasyQuery endpoints.</td></tr>
+      <tr><th>Installed backend packages</th><td><code>Korzh.EasyQuery.* 7.4.1</code>.</td></tr>
+      <tr><th>Client assets</th><td><code>App.razor</code> currently loads EasyQuery JavaScript/CSS version <code>7.2.3</code> from CDN.</td></tr>
+      <tr><th>Known defect</th><td>The backend/client minor-version mismatch can explain recorded API integration failures and must be resolved before declaring the designer production-ready.</td></tr>
+      <tr><th>Current upstream</th><td>NuGet lists <code>Korzh.EasyQuery.AspNetCore 7.4.2</code>, released 2026-04-09, as newer than the installed 7.4.1 package.</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Required first action:</strong> align all backend packages, JS packages/CDN assets and product key to one tested EasyQuery minor version. Prefer a controlled 7.4.2 compatibility branch; do not upgrade production blindly.</p>
+</section>
+
+<section class="card">
+  <h2>2. Why EasyQuery validates the metadata-first direction</h2>
+  <ul>
+    <li>Its saved query model is JSON-based; SQL is an output, not the only authoring representation.</li>
+    <li>It separates data-model metadata from the user's query conditions, selected columns, sorting, grouping and aggregation.</li>
+    <li>It supports ASP.NET Core and frontends such as MVC/Razor, Angular, React and Vue. SKY365 currently hosts the JavaScript UI through Blazor interop.</li>
+    <li>It is suitable for advanced search, ad-hoc reporting, filtering, aggregation and grouping.</li>
+  </ul>
+  <p>This supports the SKY365 design in which a Controller stores source object, fields, relationships, lookup displays and computed-field metadata, while a separate runtime query plan stores the user's current filter/group/sort/metric request.</p>
+  <p class="note"><strong>Licensing boundary:</strong> EasyQuery is a commercial product governed by Korzh licensing. Public samples may be open source, but the core product must not be treated as a forkable MIT codebase unless the applicable source-code license has been purchased.</p>
+</section>
+
+<section class="card">
+  <h2>3. What SonicGarden/blazer-querygen actually is</h2>
+  <table>
+    <tbody>
+      <tr><th>Product</th><td>A plugin for <a href="https://github.com/ankane/blazer">Blazer</a>, a Ruby/Rails SQL analytics and dashboard tool. “Blazer” is not “Blazor”.</td></tr>
+      <tr><th>Language</th><td>GitHub reports Ruby 87.4%, JavaScript 8.1%, HTML 3.5% and Shell 1.0%.</td></tr>
+      <tr><th>Packaging</th><td>Ruby Gem / Rails Engine requiring Ruby 3.2+, Rails 6+, Blazer 2+ and <code>ruby-openai</code>.</td></tr>
+      <tr><th>Version</th><td>0.1.0, released in its changelog on 2026-01-04.</td></tr>
+      <tr><th>Repository maturity</th><td>58 commits, 2 stars, 0 forks, one tag and no reported issues at the inspected date. Latest inspected commit: 2026-04-01.</td></tr>
+      <tr><th>License</th><td>MIT.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="card">
+  <h2>4. Blazer::Querygen pipeline</h2>
+  <div class="diagram">JavaScript injected into Blazer SQL editor
+  -> POST prompt + current SQL + selected data source
+  -> Rails PromptsController validates input lengths
+  -> SchemaExtractor reads ActiveRecord schema
+  -> PromptBuilder combines request + schema + current SQL
+  -> AIClient calls OpenAI with retries
+  -> QueryGenerator applies regex sanitization
+  -> generated SQL is inserted into editor
+  -> human reviews and executes through Blazer</div>
+  <p>The strongest design choice is that generated SQL is shown in the existing editor for review rather than executed automatically.</p>
+</section>
+
+<section class="card">
+  <h2>5. Valuable ideas worth porting</h2>
+  <table>
+    <thead><tr><th>Idea</th><th>SKY365 adaptation</th></tr></thead>
+    <tbody>
+      <tr><td>Natural language plus current-query revision</td><td>Allow the user to create or modify an existing <code>SkyQueryPlan</code> conversationally.</td></tr>
+      <tr><td>Schema context</td><td>Use Controller metadata and Semantic Catalog, not raw table discovery alone.</td></tr>
+      <tr><td>Table/column comments</td><td>Use business labels, descriptions, synonyms, units, status vocabularies and examples.</td></tr>
+      <tr><td>Review-before-run</td><td>Open the generated plan inside EasyQuery and show an explain panel before compilation/execution.</td></tr>
+      <tr><td>Prompt size controls</td><td>Retrieve only relevant entities/relations instead of sending a fixed alphabetical table subset.</td></tr>
+      <tr><td>Provider abstraction</td><td>Support configurable model providers behind an internal interface and policy layer.</td></tr>
+      <tr><td>Sandbox tests</td><td>Create golden Controller/query fixtures with expected plan, SQL and policy outcomes.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="card">
+  <h2>6. Material weaknesses</h2>
+  <table>
+    <thead><tr><th>Weakness</th><th>Why it matters to SKY365</th></tr></thead>
+    <tbody>
+      <tr><td>No PK/FK relationship extraction</td><td>The prompt requests correct JOINs but provides tables, columns, types, comments and enums only. JOINs are inferred from names instead of governed relationship metadata.</td></tr>
+      <tr><td>Raw SQL is the AI output</td><td>There is no canonical semantic plan, provider-independent representation or reliable round trip into a visual query model.</td></tr>
+      <tr><td>Regex sanitizer</td><td>It is not a SQL parser. It produces false positives for keywords inside comments/strings and does not constitute a complete read-only or side-effect safety boundary.</td></tr>
+      <tr><td>No tenant/row/column policy</td><td>A syntactically SELECT-only query can still reveal sensitive data, cross tenants, scan huge tables or invoke provider-specific functions.</td></tr>
+      <tr><td>Data-source parameter not implemented</td><td>The extractor currently uses the default ActiveRecord connection even though the endpoint accepts a data-source name.</td></tr>
+      <tr><td>Arbitrary schema truncation</td><td>It takes the first configured maximum number of tables, rather than retrieving the entities and relationships relevant to the request.</td></tr>
+      <tr><td>Prompt logging</td><td>Debug logging records the full system and user prompt, including schema metadata/comments and current SQL. “No row data sent” does not mean no sensitive metadata is exposed or persisted.</td></tr>
+      <tr><td>No cost/explain gate</td><td>No join-depth, row, timeout, estimated cost or sensitive-field approval control is implemented by this plugin.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="card">
+  <h2>7. Fork decision</h2>
+  <table>
+    <thead><tr><th>Option</th><th>Decision</th><th>Reason</th></tr></thead>
+    <tbody>
+      <tr><td>Fork and integrate into SKY365 core</td><td class="missing"><strong>Reject</strong></td><td>Wrong runtime and language; would introduce Ruby/Rails solely for a small AI-to-SQL adapter.</td></tr>
+      <tr><td>Fork for a separate Blazer analytics service</td><td class="partial"><strong>Conditional</strong></td><td>Only if SKY365 deliberately adopts Blazer/Rails as an isolated analytics product.</td></tr>
+      <tr><td>Keep as external research reference</td><td class="verified"><strong>Adopt</strong></td><td>MIT code is compact and useful for studying prompt, editor integration, retries and review flow.</td></tr>
+      <tr><td>Port selected patterns to C#</td><td class="verified"><strong>Adopt</strong></td><td>Fits the existing .NET/Blazor runtime and allows semantic, policy and EasyQuery integration.</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Scores:</strong> direct SKY365 code reuse 2/10; architectural reference 8/10; security boundary 3/10; useful prototype for a C# port 8/10.</p>
+</section>
+
+<section class="card">
+  <h2>8. Proposed implementation contract</h2>
+  <div class="diagram">IQueryIntentPlanner
+  Input:
+    - natural-language request
+    - optional existing SkyQueryPlan / EasyQuery Query JSON
+    - scoped Semantic Catalog subset
+    - user/tenant/profile context
+  Output:
+    - canonical SkyQueryPlan
+    - ambiguities and confidence
+    - requested fields/relations/metrics
+    - risk classification
+
+IEasyQueryPlanAdapter
+  - SkyQueryPlan -> EasyQuery Query JSON
+  - EasyQuery Query JSON -> SkyQueryPlan
+  - capability-loss report
+
+IQueryPolicyEvaluator
+  - tenant predicates
+  - row/column permissions
+  - sensitive fields
+  - max rows, joins, timeout, cost
+  - approval requirement
+
+IQueryCompiler
+  - parameterized SQL or another provider target
+  - no direct execution of model-authored SQL</div>
+</section>
+
+<section class="card">
+  <h2>9. Immediate validation backlog</h2>
+  <ol>
+    <li>Inventory every <code>Korzh.EasyQuery.*</code> package and every EasyQuery JS/CSS asset in the active solution.</li>
+    <li>Create a branch aligning backend and frontend to 7.4.2, with license/product-key validation.</li>
+    <li>Capture the real <code>QueryJson</code> generated by <code>QueryDesignerPanel.razor</code>.</li>
+    <li>Test round trip: load JSON, edit condition, save JSON, regenerate SQL.</li>
+    <li>Test a lookup displaying two and three concatenated fields.</li>
+    <li>Test multi-condition joins using explicit AND/OR join predicates.</li>
+    <li>Test computed fields, parameters, grouping, aggregation and aliases.</li>
+    <li>Verify SQL dialect, parameterization, timeout and read-only enforcement.</li>
+    <li>Add immutable tenant/security predicates that the visual editor and agent cannot remove.</li>
+    <li>Only after the tests pass, decide whether EasyQuery Query JSON is the provider model beneath <code>SkyQueryPlan</code> or whether an adapter is required.</li>
+  </ol>
+</section>
+
+<section class="card">
+  <h2>Primary references</h2>
+  <ul>
+    <li><a href="https://github.com/SonicGarden/blazer-querygen">SonicGarden/blazer-querygen</a></li>
+    <li><a href="https://github.com/SonicGarden/blazer-querygen/blob/main/lib/blazer/querygen/schema_extractor.rb">SchemaExtractor</a></li>
+    <li><a href="https://github.com/SonicGarden/blazer-querygen/blob/main/lib/blazer/querygen/query_generator.rb">QueryGenerator and sanitizer</a></li>
+    <li><a href="https://korzh.com/easyquery">Korzh EasyQuery product overview</a></li>
+    <li><a href="https://korzh.com/easyquery/docs/getting-started/asp-net-core">EasyQuery ASP.NET Core documentation</a></li>
+    <li><a href="https://www.nuget.org/packages/Korzh.EasyQuery.AspNetCore">Korzh.EasyQuery.AspNetCore on NuGet</a></li>
+    <li><a href="../review/golden-controller-questionnaire/index.html">SKY365 Golden Controller review ledger</a></li>
+  </ul>
+</section>
+</main>
+<footer>SKY365 Platform Architecture Hub · External research informs internal contracts; it does not replace source verification.</footer>
+</body>
+</html>
