@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>خارطة نقاش معمارية SKY365</title><link rel="stylesheet" href="../../assets/site.css"></head>
+<body>
+<header class="site-header"><div class="container"><a href="../../index.html">SKY365 Architecture Hub</a> / خارطة النقاش</div></header>
+<main class="container">
+  <section class="hero"><p class="eyebrow">OWNER REVIEW ROADMAP</p><h1>خارطة النقاش واتخاذ القرارات</h1><p>صفحة متابعة تمنع ضياع الأسئلة والقرارات. هذه مرحلة Architect + Reverse Engineering + Documentation فقط؛ لا تنفيذ إنتاجي قبل إغلاق القرارات.</p></section>
+  <section><h2>وصلنا إلى أين؟</h2><table><thead><tr><th>المحور</th><th>الوضع الحالي</th><th>النتيجة</th></tr></thead><tbody>
+    <tr><td>هوية المنصة</td><td class="verified">معتمد</td><td>SKY365 منصة Metadata-Driven Application Platform وليست ERP application فقط.</td></tr>
+    <tr><td>Code On Time</td><td class="verified">معتمد</td><td>مرجع خارجي ومصدر Import؛ SKY365 metadata هي مصدر التشغيل الداخلي.</td></tr>
+    <tr><td>Import/Converter</td><td class="partial">مكتشف جزئيًا</td><td>Code On Time وDatabase Schema مثبتان جزئيًا؛ Radzen وObout في الرؤية/القوالب ولم يثبت Adapter كامل لهما.</td></tr>
+    <tr><td>SQL Commands</td><td class="partial">فجوة مثبتة؛ القرار مفتوح</td><td>Converter يفقد علاقة View/Query في عينة COT، بينما لا يوجد قرار بعد حول Query metadata الآمنة.</td></tr>
+    <tr><td>Group / Layout</td><td class="verified">قصد المالك معتمد</td><td>Group داخل مخطط الشاشة الحالي لتحسين UX/UI؛ يحتوي حقول تعديل بسيط أو Component كامل أو Master Component؛ Dashboard خارج نطاقه.</td></tr>
+    <tr><td>UI + Theme</td><td class="verified">قرار تصنيف معتمد</td><td>UI Engine واحد؛ Theme عبارة عن tokens/variables وSubsystem داخله.</td></tr>
+    <tr><td>Engine Catalog</td><td class="partial">Baseline موجود؛ المراجعة التفصيلية مفتوحة</td><td>25 بندًا: 10 Verified، و9 Partial، و6 Missing/Not established.</td></tr>
+  </tbody></table></section>
+
+  <section><h2>مسار النقاش — بالترتيب</h2><table><thead><tr><th>الترتيب</th><th>موضوع النقاش</th><th>القرار المطلوب</th><th>الحالة</th></tr></thead><tbody>
+    <tr><td>1 — التالي الآن</td><td>Q002: Converter وSQL/Query Commands</td><td>هل نحفظ SQL خامًا، أم نحوله إلى Query/View Metadata مهيكلة وآمنة، وكيف نسجل conversion loss؟</td><td class="partial">جاهز للنقاش</td></tr>
+    <tr><td>2</td><td>Q003: Semantic Mapper</td><td>هل يعيش كجزء من Controller Compiler، أم Metadata Graph/Semantic Engine، وما علاقة mapping بالحقول والـlookups؟</td><td>مسجل</td></tr>
+    <tr><td>3</td><td>Q004: Worker + Scheduler</td><td>تعريف Worker JSON، ارتباطه بالـController/Service/Parameters، ثم Runner وQueue وRetry وSchedule.</td><td>مسجل</td></tr>
+    <tr><td>4</td><td>Q005: Dashboard / BI</td><td>Dashboard JSON مستقل مرتبط بالـController، أم segment داخله؟ وما مكان tags والـdata sources؟</td><td>مسجل</td></tr>
+    <tr><td>5</td><td>UI Engine contract</td><td>Group/Component Registry/Layout/Theme tokens/Renderer profiles وصلاحيات العرض؛ دون تنفيذ المصمم الآن.</td><td>الحدود الأولية معتمدة</td></tr>
+    <tr><td>6</td><td>العشرة Core Engines</td><td>مراجعة كل محرك: purpose، metadata، runtime، services، lifecycle، dependencies وextension points.</td><td>يلزم اعتماد المالك</td></tr>
+    <tr><td>7</td><td>التسعة Partial Engines</td><td>تحديد الموجود فعليًا وما يلزم لترقيته: Security، API، AI/Tools، Search، Worker، Audit، Notification، File/Media، Video/Avatar.</td><td>لم يبدأ سؤالًا بسؤال</td></tr>
+    <tr><td>8</td><td>الستة Missing Engines</td><td>تحديد: مطلوب الآن، Roadmap لاحق، أم غير مطلوب: Scheduler، Plugin، Extension lifecycle، Vector Sync، OCR، Voice/Image.</td><td>لم يبدأ</td></tr>
+    <tr><td>9</td><td>Cross-engine architecture</td><td>الهوية المشتركة، Security inheritance، Event/Audit contract، metadata versioning، والفصل بين Engine وService/Builder.</td><td>بعد مراجعة القائمة</td></tr>
+    <tr><td>10</td><td>إغلاق Goal 1</td><td>إصدار ADRs النهائية، Target Architecture، dependency map، والأولويات المعتمدة.</td><td>غير مكتمل</td></tr>
+    <tr><td>11 — لاحقًا فقط</td><td>Goal 2: Implementation</td><td>تحويل القرارات المعتمدة إلى epics وخطة تنفيذ واختبارات، بعد موافقة صريحة جديدة.</td><td class="missing">غير مصرح به الآن</td></tr>
+  </tbody></table></section>
+
+  <section><h2>طريقة العمل في كل بند</h2><ol><li>Codex يعرض الوضع الحالي المثبت من المصدر.</li><li>المالك يشرح القصة: الحالي، الطبيعي، والهدف.</li><li>نسجل الانحراف والأسئلة دون افتراض.</li><li>نقترح بدائل قليلة مع آثارها.</li><li>المالك يعتمد القرار أو يؤجله.</li><li>نحدّث الـHub وADR عند القرار الكبير، ثم ننتقل إلى بند واحد فقط.</li></ol></section>
+  <section><h2>مؤشر الإنجاز</h2><p><strong>المرحلة الحالية:</strong> Goal 1 — Discovery & Decisions.</p><p><strong>السؤال التالي المحدد:</strong> Q002 — ما الشكل الداخلي الصحيح الذي يجب أن يحتفظ بمعنى SQL/Query Commands القادمة من Code On Time دون إدخال SQL غير محكوم إلى Runtime؟</p><p>مراجع: <a href="../golden-controller-questionnaire/index.html">مخزن الأسئلة والإجابات</a> · <a href="../../engine-catalog.html">Engine Catalog</a> · <a href="../../planned-engine-roadmap.html">Planned Engine Roadmap</a>.</p></section>
+</main>
+<footer class="site-footer"><div class="container">SKY365 Platform Architecture Hub · Owner-reviewed discussion roadmap</div></footer>
+</body></html>
