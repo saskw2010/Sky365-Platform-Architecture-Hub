@@ -3,7 +3,9 @@
 <tr><td>هوية المنصة ومرجع Code On Time</td><td class="verified">مغلق</td><td>SKY365 منصة MDAP؛ COT مرجع ومصدر Import وليس مصدر التشغيل.</td></tr>
 <tr><td>Controller Aggregate وScreen Studio</td><td class="verified">مغلق معماريًا</td><td>Controller في DB هو مصدر الحقيقة؛ Builders تعدّل Drafts؛ Publish يصدر JSON للـRuntime.</td></tr>
 <tr><td>UI / Theme / Group</td><td class="verified">قرار التصنيف مغلق</td><td>UI Engine واحد، Theme subsystem/tokens؛ Group تركيب شاشة وليس Dashboard.</td></tr>
-<tr><td>Metadata / Controller Engine</td><td class="partial">المحرك الحالي</td><td>دورة الحياة معتمدة؛ ما زلنا نغلق Query/Data Source وAI authoring وSemantic Dynamic Mapper وSync/Publish داخله.</td></tr>
+<tr><td>Metadata / Controller Engine</td><td class="partial">مؤجل بعد تسجيله</td><td>دورة الحياة معتمدة، وبقية Query/Builders/AI/Semantic Mapper/Sync محفوظة للمراجعة لاحقًا.</td></tr>
+<tr><td>Controller Runtime + CRUD Engine</td><td class="partial">مؤجل بعد تسجيله</td><td>مسارات Classic/VGem3/VGPT5 والشاشة والـComponents والتكاملات وCRUD محفوظة كبنود مراجعة.</td></tr>
+<tr><td>Persistence Engine</td><td class="partial">التالي الآن</td><td>المحرك الرئيسي التالي وفق قرار المالك.</td></tr>
 <tr><td>Semantic / Workers / BI / Offline</td><td class="partial">مسجل للنقاش</td><td>الرؤية موجودة، لكن الحدود والعقود لم تُغلق.</td></tr>
 <tr><td>Engine Catalog</td><td class="partial">Baseline</td><td>27 مرشحًا: 10 Verified، 11 Partial، 6 Missing/Not established.</td></tr>
 </tbody></table></section>
@@ -21,7 +23,23 @@
 <tr><td>AI query/screen generation</td><td>AI يولد typed plan/query ثم validation وhuman approval؛ لا يكتب SQL أو JSON حرًا للتشغيل.</td><td>Skills contracts، approval، diagnostics، وكيف يحفظ الناتج Draft Revision.</td></tr>
 <tr><td>Semantic Dynamic Mapper</td><td>Mapping بين لغة العمل وentities/fields/lookups/relations/metrics، وربطه بالـController والـAI query.</td><td>تحديد مكان الـmapping metadata، lifecycle، versioning، وعلاقة ZEVAC التي ذكرها المالك بعد التحقق من الاسم والمصدر.</td></tr>
 <tr><td>Metadata Sync / Publish</td><td>DB source of truth، Draft/Preview/Publish، وتصدير JSON Snapshot للسرعة.</td><td>Publisher، hashes، cache invalidation، dependency sync، rollback وتزامن semantic mappings.</td></tr>
-</tbody></table><h3>السؤال الداخلي التالي</h3><p>نبدأ بـQuery/Data Source لأنه يغذي UI وAI وReport وDashboard وSemantic Mapper، لكنه يظل جزءًا من مراجعة Metadata / Controller Engine وليس محركًا جديدًا محسوبًا وحده الآن.</p></section>
+</tbody></table><h3>حالة المحرك</h3><p><strong>مؤجل بطلب المالك بعد حفظ كل البنود.</strong> لن نستكمل Query/Data Source أو Semantic Mapper الآن.</p></section>
+
+<section class="card"><h2>5. Controller Runtime + CRUD Engine — مؤجل بعد حفظ القصص</h2><p>هذا المحرك Verified كحد Runtime مبدئيًا، لكن مراجعته التفصيلية مؤجلة. البنود التالية محفوظة حتى نعود إليه:</p><table><thead><tr><th>المجموعة</th><th>نقاط المراجعة المؤجلة</th></tr></thead><tbody>
+<tr><td>ثلاثة مسارات Runtime</td><td>مقارنة Classic Screen وVGem3 وVGPT5: اختيار schema، تحميلها، بناء query، تحميل rows/lookups، rendering، actions، save، errors وperformance.</td></tr>
+<tr><td>بناء Query</td><td>كيف يبني كل Runtime الـSELECT والـprojection والـfilters والـlookups والـjoins والـsorting/paging؛ وهل يستخدم Auto Query أو CustomSql أو EasyQuery.</td></tr>
+<tr><td>Screen lifecycle</td><td>Resolve Controller/Profile → load published snapshot → authorize → build screen/context → load data → interact → validate → action/save → refresh/audit.</td></tr>
+<tr><td>CRUD</td><td>Create/Read/Update/Delete، source mutability، primary keys، defaults، validation، concurrency، master/detail وtransactions.</td></tr>
+<tr><td>Components داخل Screen</td><td>Grid، Form، Lookup، Tabs/Groups، Chart، Query Builder، Dashboard blocks وMaster Components، وكيف تستقبل metadata/context.</td></tr>
+<tr><td>Dashboard داخل Screen</td><td>هل هو View/Component binding داخل الشاشة أم انتقال إلى Dashboard Engine، وما contract البيانات والصلاحيات والrefresh/drill-down.</td></tr>
+<tr><td>Workflow داخل Screen</td><td>عرض الحالة والـtasks/history، الأزرار المتاحة، Start Workflow، transition/approve/reject، وربط record/controller/workflow definition.</td></tr>
+<tr><td>Workers داخل Screen</td><td>عرض حالة worker أو تشغيل action يطلب job؛ الشاشة لا تنفذ worker بنفسها، ويجب توثيق boundary مع Worker Engine.</td></tr>
+<tr><td>Reviews</td><td>Review/approval components، التعليقات، الحالة، history، الصلاحيات وعلاقتها بالWorkflow/Audit.</td></tr>
+<tr><td>Actions</td><td>New/Edit/Delete/Save/Export/Approve/Start Workflow/custom actions، visible/enabled conditions، permissions وserver/client execution.</td></tr>
+<tr><td>Security</td><td>Screen/View/Field/Action/Record/Query permissions، tenant scope، وعدم الاعتماد على إخفاء UI وحده.</td></tr>
+<tr><td>Runtime context</td><td>User/tenant/system/module/controller/profile/mode/record/parameters، وتمرير السياق لكل component ومحرك متكامل.</td></tr>
+<tr><td>API/Audit/Errors</td><td>العلاقة مع Dynamic API، diagnostics، trace IDs، audit events، failure handling وfallback behavior.</td></tr>
+</tbody></table><h3>حالة المحرك</h3><p><strong>مؤجل بطلب المالك.</strong> لا قرار جديد ولا تنفيذ. عند العودة نبدأ بمقارنة evidence table بين Classic وVGem3 وVGPT5 بدل إعادة الحوار من البداية.</p></section>
 
 <section class="card"><h2>5. Semantic / AI — لم يُغلق</h2><h3>ناقشنا</h3><ul><li>Semantic Mapper، dictionary/graph، WrenAI sidecar، Agents/Skills، RAG/Vector/MCP.</li><li>Wren للفهم الدلالي لا للصلاحيات أو التنفيذ؛ SKY365 Gateway يحتفظ بالTenant/Policy/Audit.</li><li>AI Screen Planner ينتج typed plan يمر بالvalidators والاعتماد البشري.</li></ul><h3>الباقي</h3><ul><li>مكان Semantic Mapper داخل Controller lifecycle وعلاقته بـDataSourceDefinition.</li><li>ما الموجود فعليًا، الجزئي والمفقود في AI readiness.</li><li>قرار Wren proof-of-concept من عدمه بعد تثبيت Query contract.</li></ul></section>
 
@@ -33,5 +51,5 @@
 
 <section class="card"><h2>9. Engine Catalog — Baseline فقط</h2><p>تم اعتماد قاعدة التصنيف: ليس كل Service محركًا. المحرك يحتاج Purpose وعقود Metadata وRuntime lifecycle وخدمات وextension points واضحة. القائمة الحالية 27 مرشحًا، لكن ما زال مطلوبًا فحص كل محرك بندًا بندًا وإعادة العدد النهائي بعد إزالة الأسماء التسويقية أو دمج subsystems.</p><p><a href="../../engine-catalog.html">فتح Engine Catalog</a></p></section>
 
-<section class="card"><h2>ترتيب النقاش من الآن — Engine by Engine</h2><ol><li><strong>المحرك الحالي: Metadata / Controller Engine.</strong> نغلق داخله Query/Data Source، Builders، UI metadata، AI generation، Semantic Dynamic Mapper، ثم Sync/Publish.</li><li>Controller Runtime + CRUD Engine.</li><li>Persistence Engine، ويشمل master/detail وbatch وحدوده مع Offline.</li><li>UI Engine، ويشمل rendering وcomponent registry والـTheme subsystem.</li><li>Workflow Engine.</li><li>Metadata Graph / Semantic Engine boundary.</li><li>Dashboard/BI ثم Report، مع مراجعة الاشتراك في Data Sources.</li><li>Integration ثم Business Rule/Validation.</li><li>بعد verified engines: نراجع partial capabilities ونقرر أيها Engine مستقل وأيها subsystem.</li><li>ثم missing candidates، وبعدها Cross-engine contracts وإغلاق Goal 1.</li></ol><p><strong>قاعدة منع التكرار:</strong> نناقش capability داخل المحرك المالك لها، ونسجل فقط عقد التكامل عند ظهور محرك آخر. وجود capability في قائمة الـ27 لا يعني تلقائيًا أنها Engine نهائي مستقل.</p></section>
+<section class="card"><h2>ترتيب النقاش من الآن — Engine by Engine</h2><ol><li><strong>Metadata / Controller Engine — مؤجل بعد التوثيق.</strong></li><li><strong>Controller Runtime + CRUD Engine — مؤجل بعد تسجيل كل القصص.</strong></li><li><strong>التالي الآن: Persistence Engine</strong>، ويشمل immediate/atomic/hybrid، master/detail، batch، transactions وحدوده مع Offline.</li><li>UI Engine، ويشمل rendering وcomponent registry والـTheme subsystem.</li><li>Workflow Engine.</li><li>Metadata Graph / Semantic Engine boundary.</li><li>Dashboard/BI ثم Report، مع مراجعة الاشتراك في Data Sources.</li><li>Integration ثم Business Rule/Validation.</li><li>بعد verified engines: نراجع partial capabilities ونقرر أيها Engine مستقل وأيها subsystem.</li><li>ثم missing candidates، وبعدها Cross-engine contracts وإغلاق Goal 1.</li></ol><p><strong>قاعدة منع التكرار:</strong> نناقش capability داخل المحرك المالك لها، ونسجل فقط عقد التكامل عند ظهور محرك آخر. وجود capability في قائمة الـ27 لا يعني تلقائيًا أنها Engine نهائي مستقل.</p></section>
 </main><footer>SKY365 Platform Architecture Hub · owner-reviewed memory map · 2026-07-17</footer></body></html>
