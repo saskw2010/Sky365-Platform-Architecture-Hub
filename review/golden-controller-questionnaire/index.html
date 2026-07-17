@@ -17,7 +17,25 @@
       <tr><th>التقرير المتأثر</th><td><a href="../../evidence/golden-controller-audit-2026-07-17/index.html">Golden Controller Audit</a></td></tr>
     </tbody></table>
   </section>
-  <section><h2>السؤال التالي</h2><p>لم يُطرح بعد. ننتظر اعتماد Q001 أولًا.</p></section>
+  <section><h2>توسعة Q001 — القصة كما شرحها مالك المنصة</h2>
+    <table><tbody>
+      <tr><th>الوضع الحالي</th><td>SKY365 يملك Converter Engine يستطيع قراءة Controller من منصة خارجية مثل Code On Time وتحويله إلى صيغة SKY365 الداخلية. Code On Time ليس حالة وحيدة؛ هو أول مثال ضمن نظم خارجية متعددة يمكن تحويلها مستقبلًا.</td></tr>
+      <tr><th>الطبيعي / المرجعي</th><td>نستخدم إمكانيات النظام الخارجي كـbaseline للمقارنة: ما الذي يدعمه Controller الخارجي، وما الذي يغطيه Controller الداخلي، وما التحسينات التي تضيفها SKY365 فوقه.</td></tr>
+      <tr><th>الهدف</th><td>استيراد ERP مبني على Code On Time وتحويل Controllers مباشرة إلى SKY365، ثم تشغيلها داخل محركات SKY365 دون اعتماد تشغيلي على Code On Time.</td></tr>
+      <tr><th>ملاحظة مكتشفة</th><td>Controller الخاص بـCode On Time يحتوي SQL Commands، بينما مخرجات/نموذج الـConverter الحالي لا يظهر فيه تمثيل واضح لهذه الـCommands.</td></tr>
+      <tr><th>التصنيف الآن</th><td><strong>استفسار مفتوح، وليس إيجابية أو سلبية بعد.</strong> يلزم فحص أنواع الـCommands، ما إذا كانت مطلوبة وقت التشغيل، وكيف ينبغي تمثيلها وتأمينها داخل SKY365.</td></tr>
+    </tbody></table>
+  </section>
+  <section><h2>Decision Backlog الناتج عن القصة</h2>
+    <table><thead><tr><th>رقم</th><th>محور الدراسة</th><th>الاستفسار المسجل</th><th>الحالة</th></tr></thead><tbody>
+      <tr><td>Q002</td><td>Converter / SQL Commands</td><td>ما أنواع SQL Commands الموجودة في COT Controller؟ ماذا يفقد الـConverter حاليًا؟ وهل يجب تحويلها إلى metadata أو actions أو طبقة آمنة أخرى؟</td><td>التالي للدراسة</td></tr>
+      <tr><td>Q003</td><td>Semantic Mapper</td><td>أين يعيش mapping وSemantic Mapper بالنسبة إلى Controller: داخل schema، segment مستقل، compiler stage، أم Semantic Engine؟</td><td>مسجل، لم يُدرس</td></tr>
+      <tr><td>Q004</td><td>Worker Engine</td><td>هل يوجد في الكود Worker Runtime وWorker Builder وRunner؟ ما JSON الذي يقرؤه؟ وكيف يربط كل Worker بالـController والـschedule والـservice والـparameters والتوثيق؟</td><td>مسجل، لم يُدرس</td></tr>
+      <tr><td>Q005</td><td>BI / Dashboard</td><td>هل تعريف BI الخاص بالـController يكون Controller segment، أم JSON Dashboard مستقلًا مع tags/relations داخل Controller؟ وكيف نفصل static generation عن dynamic engine segments؟</td><td>مسجل، لم يُدرس</td></tr>
+    </tbody></table>
+  </section>
+  <section><h2>نظام الـGoals</h2><ol><li><strong>Goal 1 — Discovery & Decisions (نشط):</strong> إنهاء الأسئلة واحدة واحدة، فحص الكود، وتوثيق القرار المعماري. لا تنفيذ إنتاجي.</li><li><strong>Goal 2 — Implementation (لاحق):</strong> يُنشأ فقط بعد اعتماد قرارات Goal 1، ويحوّل القرارات إلى خطة وتنفيذ واختبارات.</li></ol></section>
+  <section><h2>السؤال التالي</h2><p><strong>Q002 فقط:</strong> نبدأ أولًا بفهم معنى SQL Commands داخل Code On Time Controller وما الذي تتوقع أن يحتفظ به SKY365 عند التحويل.</p></section>
 </main>
 <footer class="site-footer"><div class="container">SKY365 Platform Architecture Hub · Owner-reviewed architecture</div></footer>
 </body></html>
