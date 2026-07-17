@@ -127,6 +127,27 @@
     <tr><th>علاقة EasyQuery</th><td>EasyQuery/Data Source Designer يستطيع توليد Relation والـprojection الخاصة بالـLookup للـGrid/Report/Dashboard. لكن Lookup field metadata تظل المصدر الدلالي للعلاقة، وQuery Compiler هو من يقرر SQL الآمنة.</td></tr>
     <tr><th>دليل المصدر</th><td><code>DynamicRuntimeVGem3.razor.cs:269–270,638–653,786–829</code>؛ <code>Sky365DynamicRuntimeService.cs:699–756,940–1019,1199–1286</code>؛ <code>RuntimeVGem3GridView.razor.cs:105–143</code>.</td></tr>
   </tbody></table></section>
+  <section><h2>Q002-C — مقارنة مسارات جلب البيانات الثلاثة</h2>
+    <table><thead><tr><th>المعيار</th><th>1) Auto Table Query الحالية</th><th>2) Command / EasyQuery المهيكل</th><th>3) Custom SQL الخام</th></tr></thead><tbody>
+      <tr><td>المصدر</td><td><code>TableName + Fields/InList + Filters</code></td><td><code>QueryJson + Relations + Parameters + Output Schema</code></td><td>نص SQL محفوظ كما هو</td></tr>
+      <tr><td>القدرات</td><td>جدول واحد؛ حقول مباشرة؛ Search/Filters بسيطة</td><td>JOIN وaliases وcomputed projection وparameters وpaging؛ قابل لإعادة الاستخدام في Grid/Report/Dashboard</td><td>كل ما تسمح به SQL تقريبًا</td></tr>
+      <tr><td>Lookup</td><td>FK في Query أساسية + Options Query منفصلة + mapping في الذاكرة</td><td>Relation مع <code>LEFT JOIN</code> وعمود Display alias، مع بقاء FK للحفظ</td><td>المطور يكتب JOIN والـalias يدويًا</td></tr>
+      <tr><td>الأمان والحوكمة</td><td>أفضل نسبيًا: identifiers normalized والقيم parameterized</td><td>الأفضل إذا مر عبر Validator/Compiler وallowlist وpolicy</td><td>الأخطر؛ يصعب معرفة الجداول والأعمدة والصلاحيات والتكلفة من النص وحده</td></tr>
+      <tr><td>الأداء</td><td>جيد للشاشات الصغيرة؛ يضعف مع Lookup كبيرة والبحث النصي؛ لا paging واضح</td><td>الأفضل عند إضافة server paging/sort/filter، output schema وquery-cost limits</td><td>قد يكون ممتازًا أو كارثيًا حسب الكاتب؛ لا ضمان تلقائي</td></tr>
+      <tr><td>الصيانة/النقل</td><td>بسيط لكنه محدود ومرتبط بشكل جدول واحد</td><td>Metadata قابلة للإصدار والتحليل والتحويل بين providers نسبيًا</td><td>مرتبط بلهجة قاعدة البيانات وصعب الـdiff والتحليل والترقية</td></tr>
+      <tr><td>الحفظ</td><td>WriteMap واضح لأن الجدول الأساسي معروف</td><td>يجب فصل <code>Read Query</code> عن <code>Aggregate WriteMap</code></td><td>لا يجوز استنتاج الكتابة تلقائيًا من SELECT/JOIN خام</td></tr>
+      <tr><td>الوضع المقترح</td><td><strong>Fallback رسمي</strong> للشاشة البسيطة</td><td><strong>المسار الرسمي المستهدف</strong></td><td><strong>Compatibility escape hatch</strong> مقيد، وليس default</td></tr>
+    </tbody></table>
+    <h3>القرار المقترح</h3>
+    <ol>
+      <li><strong>Command/EasyQuery Metadata هي المصدر الرسمي للـRead Model</strong> عندما تحتاج الشاشة Relation أو Lookup display أو تقريرًا أو Dashboard.</li>
+      <li><strong>Auto Table Query تبقى ولا نحذفها</strong>؛ يستخدمها الـController البسيط تلقائيًا عندما لا توجد Command مرتبطة بالـView.</li>
+      <li><strong>Custom SQL يُحفظ للاستيراد والتوافق</strong>، ولا ينفذ إلا كـSELECT داخل Policy: approved connection، allowlisted objects، parameters فقط، timeout، row limit، audit وقراءة فقط.</li>
+      <li>الـRuntime لا يعتمد على EasyQuery كـvendor library؛ يعتمد على SKY365 <code>DataSourceDefinition</code>. EasyQuery أحد المصممين القادرين على إنتاجها.</li>
+      <li>كل View تربط <code>DataSourceRef/CommandId</code>؛ Report وDashboard يعيدان استخدام المرجع نفسه، بينما WriteMap مستقل للحفظ.</li>
+    </ol>
+    <p><strong>قاعدة الاختيار:</strong> Simple CRUD → Auto Query؛ Joined/Reusable Dataset → Compiled Command؛ Imported unsupported legacy query → Governed Raw SQL مؤقتًا حتى يُحوّل إلى metadata.</p>
+  </section>
   <section><h2>Q002 — فحص الوضع الحالي من المصدر</h2>
     <table><tbody>
       <tr><th>الحالة</th><td>تم إثبات الوضع الحالي؛ ننتظر قصة المالك ثم القرار.</td></tr>
