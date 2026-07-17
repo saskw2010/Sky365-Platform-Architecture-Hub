@@ -1,0 +1,42 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Screen Runtime Lifecycle</title><link rel="stylesheet" href="assets/site.css"></head><body><header><a href="index.html">Back to Hub</a><h1>Controller-to-Screen Runtime Lifecycle</h1><p>Purpose: trace one Controller from discovery to human UI, CRUD API, workflow and agent tooling.</p></header><main><section class="hero"><h2>End-to-end sequence</h2><div class="diagram">1. Root system registry
+   -> system module registry
+2. Module catalog
+   -> unified Controller catalog
+3. User/agent chooses Controller
+   -> schemaName + moduleKey + systemGroup + optional profile
+4. Runtime resolves schema path
+   -> JSON DynamicScreenSchema or Code On Time fallback conversion
+5. Profile overlays base schema
+6. Authorization and lookup contract checks
+7. Mode dispatch
+   |-- list: BuildRows + search + workflow row status
+   |-- view/edit: GetById + lookups + detail schemas
+   `-- create: CreateEmptyModel + defaults + lookups
+8. UI renderer builds fields/sections/actions/details
+9. Save
+   -> UI rules -> pre-save rules -> CRUD/persistence -> post-save actions
+10. Linked surfaces
+   |-- workflow command/review
+   |-- report builder/viewer
+   |-- dynamic REST/OpenAPI/Swagger
+   `-- agent skills and Controller tools</div></section>
+<section class="card"><h2>Stage 1 - Discovery</h2><p><strong>Input:</strong> root systems, module registries and module-owned Controller catalogs.</p><p><strong>Runtime:</strong> <code>DynamicControllerCatalogService</code>, portal catalog providers and runtime index providers.</p><p><strong>Output:</strong> normalized catalog item with schema, module, system/display context and generated URLs.</p><p><strong>Failure risks:</strong> missing onboarding, catalog coverage gaps, duplicate scoped identities and display label/key drift.</p></section>
+<section class="card"><h2>Stage 2 - Route and scope</h2><p>The primary VGem3 screen routes are:</p><ul><li><code>/sky365-dynamic/runtime/vgem3/schema/{SchemaName}</code></li><li><code>/sky365-dynamic/runtime/vgem3/schema/{SchemaName}/{Mode}</code></li><li><code>/sky365-dynamic/runtime/vgem3/schema/{SchemaName}/{Mode}/{Id}</code></li></ul><p>Catalog routes add system/module context. The runtime may also receive a profile key and workflow return context. Scope must survive every generated link; losing <code>moduleKey</code> or <code>systemGroup</code> can select another schema with the same name.</p></section>
+<section class="card"><h2>Stage 3 - Schema resolution</h2><p><code>Sky365DynamicRuntimeService.LoadSchemaAsync</code> resolves the scoped path, deserializes <code>DynamicScreenSchema</code>, or can map a Code On Time Controller through its fallback parser. A requested <code>DynamicSchemaProfile</code> then overlays list/form fields, defaults, details and field behavior.</p><p>Lookup definitions are validated. Explicit Primary/Fallback contracts require endpoint identity; legacy source-only lookups are accepted with warnings.</p></section>
+<section class="card"><h2>Stage 4 - Mode initialization</h2><table><tr><th>Mode</th><th>Runtime work</th><th>Result</th></tr><tr><td>List</td><td>Load schema, query rows, apply search/list filters, load workflow row status.</td><td>Grid/list with actions, search, exports, workflow and report entry points.</td></tr><tr><td>Create</td><td>Create empty model, apply defaults/profile, load lookups, initialize details, execute OnLoad UI actions.</td><td>Metadata-built form.</td></tr><tr><td>View</td><td>Get record and related/detail context; fields render read-only according to mode/rules.</td><td>Record view and linked workflow/report actions.</td></tr><tr><td>Edit</td><td>Get record, check workflow editability, load lookups/details and execute UI rules.</td><td>Editable metadata form.</td></tr></table></section>
+<section class="card"><h2>Stage 5 - Dynamic rendering</h2><p>VGem3 and reusable Dynamic Engine components consume:</p><ul><li>field type and labels to select controls;</li><li>sections/layout metadata to compose the form;</li><li>visibility/read-only expressions and dependencies;</li><li>lookup metadata, including cascading filters and quick add;</li><li>detail schemas for master-detail blocks;</li><li>view/actions/profile metadata for mode-specific experience.</li></ul><p>Some business-specific checks still appear inside the VGem3 page code. These are deviations from a purely metadata-compiled runtime and should be cataloged before claiming full genericity.</p></section>
+<section class="card"><h2>Stage 6 - Save lifecycle</h2><div class="diagram">User changes field
+  -> dependency/lookup refresh
+  -> UI actions and conditional state
+  -> optional local buffered draft
+  -> SaveAsync
+     -> business-flow validation
+     -> pre-save validation/mutation rules
+     -> CreateAsync or UpdateAsync
+        -> master/detail persistence
+        -> many-to-many persistence
+     -> post-save actions
+     -> return to workflow or list</div><p>Create/update call the runtime with effective schema, module and system context from the screen. The current HTTP Dynamic API does not preserve the same full scope; see ADR-0004.</p></section>
+<section class="card"><h2>Stage 7 - Dynamic REST API</h2><p>The <code>/api/dynamic</code> group requires <code>AdminAccess</code> and exposes catalog, navigation graph, dataset comparison/projections, schema description, CRUD rows, OpenAPI and Swagger.</p><table><tr><th>Operation</th><th>Endpoint</th><th>Runtime method</th></tr><tr><td>List/search</td><td>GET <code>/{schema}/rows</code></td><td><code>BuildRowsAsync</code></td></tr><tr><td>Get</td><td>GET <code>/{schema}/rows/{id}</code></td><td><code>GetByIdAsync</code></td></tr><tr><td>Create</td><td>POST <code>/{schema}/rows</code></td><td><code>CreateAsync</code></td></tr><tr><td>Update</td><td>PUT <code>/{schema}/rows/{id}</code></td><td><code>UpdateAsync</code></td></tr><tr><td>Delete</td><td>DELETE <code>/{schema}/rows/{id}</code></td><td><code>DeleteAsync</code></td></tr><tr><td>Contract</td><td>GET <code>/{schema}/openapi.json</code></td><td>API description service</td></tr></table></section>
+<section class="card"><h2>Stage 8 - Workflow, reports and agents</h2><ul><li><strong>Workflow:</strong> <code>WorkflowCode</code> enables row status icons, workflow navigation and edit gates.</li><li><strong>Reports:</strong> schema identity opens report builder/viewer and selects metadata-defined templates.</li><li><strong>Agents:</strong> skills and Dynamic Tool Gateway discover the same catalog, describe fields, search records and open screens/records.</li><li><strong>Semantic graph:</strong> Controller, schema, fields and linked artifacts become impact/query relationships.</li></ul></section>
+<section class="card"><h2>Failure and observability points</h2><table><tr><th>Point</th><th>Expected evidence</th></tr><tr><td>Catalog resolution</td><td>Canonical scoped identity and source path.</td></tr><tr><td>Schema load</td><td>Deserialization/conversion warnings and source revision.</td></tr><tr><td>Lookup</td><td>Resolved primary/fallback source and friendly failure.</td></tr><tr><td>Authorization</td><td>User, roles, system/module/schema operation and decision.</td></tr><tr><td>CRUD</td><td>Operation, table identity, affected record and transaction result without sensitive values.</td></tr><tr><td>Rules/actions</td><td>Trigger, rule/action identity, outcome and duration.</td></tr><tr><td>Workflow/tool</td><td>Trace ID linking screen action to workflow or agent trace.</td></tr></table><h2>Roadmap</h2><p>Make scope immutable across routes, API, tools and caches; compile schemas before execution; move business-specific VGem3 branches into metadata/extensions; add non-mutating golden screen probes.</p><p>Related: <a href="metadata-model-reference.html">Metadata Model</a>, <a href="controller-capability-matrix.html">Capability Matrix</a>, <a href="adr/0004-scoped-runtime-identity.html">ADR-0004</a>.</p></section></main></body></html>

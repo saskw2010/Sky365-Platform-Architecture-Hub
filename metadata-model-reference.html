@@ -1,0 +1,34 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Metadata Model Reference</title><link rel="stylesheet" href="assets/site.css"></head><body><header><a href="index.html">Back to Hub</a><h1>SKY365 Metadata Model Reference</h1><p>Purpose: describe the metadata contracts that drive Controllers, screens and runtime engines.</p></header><main><section class="hero"><h2>Model layers</h2><div class="diagram">Source metadata
+  |-- Code On Time XML
+  |-- authored Dynamic JSON
+  `-- database-backed SysController
+           |
+           v
+Runtime metadata
+  |-- DynamicScreenSchema
+  |-- DynamicSchemaProfile
+  |-- Controller Catalog Item
+  |-- Workflow / Dashboard / Report metadata
+  `-- MetadataGraphSnapshot
+           |
+           v
+Runtime behavior: UI + CRUD + API + rules + workflow + reports + tools</div></section>
+<section class="card"><h2>1. Controller catalog identity</h2><table><tr><th>Field family</th><th>Purpose</th></tr><tr><td><code>Name</code>, <code>SchemaName</code></td><td>Controller/catalog and schema lookup identity.</td></tr><tr><td><code>SystemGroup</code>, <code>ModuleKey</code></td><td>Scope resolution, filtering, routes and authorization context.</td></tr><tr><td><code>Title</code>, localized titles/descriptions</td><td>Human-facing discovery labels; must not be treated as stable identity.</td></tr><tr><td><code>NodeType</code>, <code>ParentKey</code>, menu/group fields</td><td>Navigation topology.</td></tr><tr><td><code>AllowedRoles</code>, visibility</td><td>Discovery and access hints.</td></tr><tr><td><code>SourceXmlPath</code></td><td>Code On Time provenance.</td></tr><tr><td><code>GetEndpoint</code>, <code>RuntimeUrl</code>, <code>PreviewUrl</code></td><td>Generated runtime surfaces.</td></tr></table></section>
+<section class="card"><h2>2. DynamicScreenSchema</h2><table><tr><th>Metadata group</th><th>Fields and behavior</th></tr><tr><td>Screen identity</td><td><code>ScreenName</code>, <code>DisplayName</code>, icon, default mode and sort.</td></tr><tr><td>Data identity</td><td><code>TableSchema</code>, <code>TableName</code>, <code>IdField</code>, custom SQL, connection name.</td></tr><tr><td>Persistence</td><td><code>PersistenceModel</code> supports Atomic, Immediate, Hybrid or Buffered intent; master/detail and many-to-many metadata extend it.</td></tr><tr><td>Composition</td><td>Fields, sections, views, detail schemas and detail view type.</td></tr><tr><td>Profiles</td><td>Active profile, print templates, list/form overrides and defaults.</td></tr><tr><td>Filtering/defaults</td><td>List filters and default values.</td></tr><tr><td>Lifecycle behavior</td><td>UI actions, pre-save rules and post-save actions.</td></tr><tr><td>Workflow</td><td>Embedded workflow, linked workflow code and manual user-workflow actions.</td></tr></table></section>
+<section class="card"><h2>3. Field definition</h2><table><tr><th>Concern</th><th>Metadata</th></tr><tr><td>Identity and labels</td><td><code>Name</code>, primary label, Arabic label and English label with deterministic fallback.</td></tr><tr><td>Type and placement</td><td>Type, list/form inclusion, order, section and tab.</td></tr><tr><td>Validation/state</td><td>Required, read-only, hidden, max length, placeholder, conditional visibility/read-only and dependencies.</td></tr><tr><td>Layout</td><td>Width/min/max, flex basis/grow, mode, wrap, gap and card style.</td></tr><tr><td>Relationships</td><td>Lookup and many-to-many definitions.</td></tr></table></section>
+<section class="card"><h2>4. Lookup definition</h2><p>A lookup can use a legacy single source or an explicit Primary/Fallback contract. Metadata includes source/schema/controller/table identity, value/text/secondary fields, display template, quick-add schema, lookup type and a copy map.</p><p>The runtime validates that explicit contracts contain endpoint identity for both Primary and Fallback. Legacy shapes are accepted with a warning. This is a live migration boundary rather than one uniform contract.</p></section>
+<section class="card"><h2>5. Views, sections and actions</h2><ul><li><strong>Sections:</strong> title, description, order and reusable layout metadata.</li><li><strong>Views:</strong> name, labels, type, source/custom SQL, description, fields and actions.</li><li><strong>Actions:</strong> name/ID, label/icon/color, type/endpoint/execute target, confirmation, roles, condition and payload mode.</li></ul><p>These definitions drive presentation and executable interaction, but not every Code On Time import path preserves them.</p></section>
+<section class="card"><h2>6. Schema profiles</h2><p><code>DynamicSchemaProfile</code> overlays one base schema without copying it. It can rename the screen, select print template, add filters/defaults/details, choose list/form fields and override labels, placement, visibility, required/read-only state and maximum length.</p><p>This makes one Controller reusable across personas and workflows, but profile identity must remain part of runtime context and cache keys.</p></section>
+<section class="card"><h2>7. Linked metadata domains</h2><table><tr><th>Domain</th><th>Relationship to Controller</th></tr><tr><td>Workflow</td><td>Embedded definition or linked by workflow code/schema relationship.</td></tr><tr><td>Dashboard</td><td>Dashboard/widget data sources may reference schemas and Controllers.</td></tr><tr><td>Report</td><td>Templates and datasets reference Controller/schema fields.</td></tr><tr><td>Security</td><td>Roles and permissions attach to catalog/graph nodes and runtime operations.</td></tr><tr><td>API/tools</td><td>Catalog and screen schema compile into discovery, read endpoints and agent tool descriptions.</td></tr><tr><td>Semantic graph</td><td>Systems, modules, Controllers, schemas, fields and linked domains become typed nodes/edges.</td></tr></table></section>
+<section class="card"><h2>Dynamic behavior example</h2><div class="diagram">Field metadata: ClientId
+  type=select
+  lookup.Controller=TplMdMstClient
+  valueField=ClientId
+  displayTemplate={Code} - {Name}
+  allowQuickAdd=true
+        |
+        v
+UI renders lookup -> runtime resolves scoped Controller -> user selects value
+        |
+        v
+copy map fills dependent fields -> pre-save rules validate -> persistence saves</div><h2>Roadmap</h2><p>Publish JSON Schemas for each metadata contract, formalize a Controller Intermediate Representation, define compatibility/version rules and validate cross-engine permission inheritance.</p><p>Related: <a href="conversion-fidelity-matrix.html">Conversion Fidelity</a>, <a href="controller-runtime.html">Runtime Lifecycle</a>, <a href="core-runtime-engines.html">Core Engines</a>.</p></section></main></body></html>
