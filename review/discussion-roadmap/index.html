@@ -12,14 +12,14 @@
     <tr><td>SQL Commands</td><td class="partial">فجوة مثبتة؛ القرار مفتوح</td><td>Converter يفقد علاقة View/Query في عينة COT، بينما لا يوجد قرار بعد حول Query metadata الآمنة.</td></tr>
     <tr><td>Group / Layout</td><td class="verified">قصد المالك معتمد</td><td>Group داخل مخطط الشاشة الحالي لتحسين UX/UI؛ يحتوي حقول تعديل بسيط أو Component كامل أو Master Component؛ Dashboard خارج نطاقه.</td></tr>
     <tr><td>UI + Theme</td><td class="verified">قرار تصنيف معتمد</td><td>UI Engine واحد؛ Theme عبارة عن tokens/variables وSubsystem داخله.</td></tr>
-    <tr><td>Engine Catalog</td><td class="partial">Baseline موجود؛ المراجعة التفصيلية مفتوحة</td><td>26 بندًا بعد تسجيل Offline/Sync: 10 Verified، و10 Partial، و6 Missing/Not established.</td></tr>
+    <tr><td>Engine Catalog</td><td class="partial">Baseline موجود؛ المراجعة التفصيلية مفتوحة</td><td>27 بندًا بعد تسجيل Offline/Sync وData Source Designer: 10 Verified، و11 Partial، و6 Missing/Not established.</td></tr>
   </tbody></table></section>
 
   <section><h2>مسار النقاش — بالترتيب</h2><table><thead><tr><th>الترتيب</th><th>موضوع النقاش</th><th>القرار المطلوب</th><th>الحالة</th></tr></thead><tbody>
     <tr><td>1 — التالي الآن</td><td>Q002: Converter وSQL/Query Commands</td><td>هل نحفظ SQL خامًا، أم نحوله إلى Query/View Metadata مهيكلة وآمنة، وكيف نسجل conversion loss؟</td><td class="partial">جاهز للنقاش</td></tr>
     <tr><td>2</td><td>Q003: Semantic Mapper</td><td>هل يعيش كجزء من Controller Compiler، أم Metadata Graph/Semantic Engine، وما علاقة mapping بالحقول والـlookups؟</td><td>مسجل</td></tr>
     <tr><td>3</td><td>Q004 + Q007: Worker/Scheduler وOffline/Sync</td><td>تعريف Worker JSON وRunner/Queue/Retry/Schedule، ثم local store/outbox/sync/conflict contract المطلوب للـPOS والعمل دون اتصال.</td><td>Offline foundation اكتُشف؛ الحدود الكاملة مفتوحة</td></tr>
-    <tr><td>4</td><td>Q005: Dashboard / BI</td><td>Dashboard JSON مستقل مرتبط بالـController، أم segment داخله؟ وما مكان tags والـdata sources؟</td><td>مسجل</td></tr>
+    <tr><td>4</td><td>Q005: Shared Data Sources + Dashboard / BI / Reports</td><td>اعتماد DataSourceDefinition مشتركة يصممها EasyQuery وتستهلكها Grid/Report/Dashboard؛ ثم تحديد مكان Dashboard JSON وtags والـwidgets والـbindings.</td><td>دور EasyQuery الموسع مثبت من المالك؛ العقد التفصيلي مفتوح</td></tr>
     <tr><td>5</td><td>UI Engine contract</td><td>Group/Component Registry/Layout/Theme tokens/Renderer profiles وصلاحيات العرض؛ دون تنفيذ المصمم الآن.</td><td>الحدود الأولية معتمدة</td></tr>
     <tr><td>6</td><td>العشرة Core Engines</td><td>مراجعة كل محرك: purpose، metadata، runtime، services، lifecycle، dependencies وextension points.</td><td>يلزم اعتماد المالك</td></tr>
     <tr><td>7</td><td>التسعة Partial Engines</td><td>تحديد الموجود فعليًا وما يلزم لترقيته: Security، API، AI/Tools، Search، Worker، Audit، Notification، File/Media، Video/Avatar.</td><td>لم يبدأ سؤالًا بسؤال</td></tr>
