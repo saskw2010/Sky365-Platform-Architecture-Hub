@@ -114,6 +114,19 @@
     <tr><th>قرار المالك المسجل</th><td>EasyQuery يصمم Commands وQueries وRelations، ويمكن استخدامه كمحرك/مصمم Data Sources للتقارير والـDashboard بجانب شاشات الـRuntime.</td></tr>
     <tr><th>دليل المصدر</th><td><code>Sky365DynamicRuntimeService.cs:610–629,1199–1286</code>؛ <code>DynamicSchemaView.razor.cs:61–74</code>؛ <code>DynamicRuntimeVGem3.razor.cs:269</code>؛ <code>DynamicRuntimeVGpt5.razor.cs:246</code>؛ <code>VisualQueryRuntimeService.cs:29–73</code>.</td></tr>
   </tbody></table></section>
+  <section><h2>Q002-B — كيف يظهر الـLookup في VGem3 حاليًا؟</h2><table><tbody>
+    <tr><th>الإجابة المباشرة</th><td><strong>SQL الجريد لا تعمل JOIN للـLookup.</strong> الجريد تجلب قيمة الـFK من الجدول الأساسي، ثم VGem3 يحمل قاموس خيارات الـLookup باستعلام منفصل ويحوّل الـID إلى Text عند العرض.</td></tr>
+    <tr><th>Query الجريد</th><td>مثلًا: <code>SELECT [Id], [CustomerId], ... FROM [dbo].[Orders]</code>. الناتج يحتوي <code>CustomerId=15</code> فقط.</td></tr>
+    <tr><th>Query الـLookup</th><td><code>GetLookupOptionsAsync</code> يحل Primary/legacy/Fallback source، ثم يولد تقريبًا: <code>SELECT CAST(ValueField AS nvarchar) AS Value, CAST(TextExpression AS nvarchar) AS Text FROM LookupTable ORDER BY Text</code>. يدعم <code>DisplayTemplate</code> أو <code>TextField + SecondaryTextField</code> للاسم الثنائي.</td></tr>
+    <tr><th>التحميل</th><td><code>LoadLookupsAsync</code> يحمل بالتوازي كل Lookups للحقول التي عليها <code>InForm</code> أو <code>InList</code>، ويخزنها في <code>_lookupOptions[fieldName]</code>.</td></tr>
+    <tr><th>العرض</th><td><code>GetRowDisplayValue</code> يأخذ FK الخام من الصف، يبحث عن Option مساوية له، ثم يعرض <code>option.Text</code>. Filters داخل Grid تستخدم القيمة المعروضة، لذلك تظهر أسماء لا IDs.</td></tr>
+    <tr><th>الميزة</th><td>فصل Lookup metadata عن Query الجدول؛ إعادة استخدام الخيارات في Form وGrid؛ ودعم مصدر Controller أو جدول مع fallback وقوالب عرض ثنائية.</td></tr>
+    <tr><th>المشكلات</th><td>تحميل قائمة Lookup كاملة لكل حقل؛ والبحث عن الاسم يتم بعد جلب البيانات وليس داخل SQL الرئيسية. لذلك البحث العام في الـRuntime يبحث في FK الخام لا اسم العميل، والفرز/الـpaging على النص المعروض لا يمكن دفعه بكفاءة لقاعدة البيانات. كذلك البحث الخطي عن Option لكل Cell قد يصبح مكلفًا مع جداول/Lookups كبيرة.</td></tr>
+    <tr><th>التصميم الأفضل</th><td><strong>Hybrid Lookup Policy.</strong> للـForm والـLookups الصغيرة: نحتفظ بقائمة options مع cache/dictionary وlazy/paged loading. للـGrid والبحث والتقارير: Query Compiler يستخدم Relation metadata ويولد <code>LEFT JOIN</code> أو projection مع alias مثل <code>CustomerId__Text</code>، مع الاحتفاظ بـ<code>CustomerId</code> للحفظ.</td></tr>
+    <tr><th>مثال الناتج الأفضل</th><td><code>SELECT o.Id, o.CustomerId, c.Name AS CustomerId__Text FROM Orders o LEFT JOIN Customers c ON c.Id=o.CustomerId</code>. الـUI يعرض <code>CustomerId__Text</code>، بينما WriteMap يحفظ <code>CustomerId</code>.</td></tr>
+    <tr><th>علاقة EasyQuery</th><td>EasyQuery/Data Source Designer يستطيع توليد Relation والـprojection الخاصة بالـLookup للـGrid/Report/Dashboard. لكن Lookup field metadata تظل المصدر الدلالي للعلاقة، وQuery Compiler هو من يقرر SQL الآمنة.</td></tr>
+    <tr><th>دليل المصدر</th><td><code>DynamicRuntimeVGem3.razor.cs:269–270,638–653,786–829</code>؛ <code>Sky365DynamicRuntimeService.cs:699–756,940–1019,1199–1286</code>؛ <code>RuntimeVGem3GridView.razor.cs:105–143</code>.</td></tr>
+  </tbody></table></section>
   <section><h2>Q002 — فحص الوضع الحالي من المصدر</h2>
     <table><tbody>
       <tr><th>الحالة</th><td>تم إثبات الوضع الحالي؛ ننتظر قصة المالك ثم القرار.</td></tr>
